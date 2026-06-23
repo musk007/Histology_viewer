@@ -8,10 +8,13 @@ from io import BytesIO
 import gspread
 from google.oauth2.service_account import Credentials
 from datetime import datetime
+from audio_recorder_streamlit import audio_recorder
+from google.cloud import storage
 
 st.set_page_config(layout="wide")
 st.title("Histopathology Dataset Viewer")
-
+DRIVE_FOLDER_ID = "1m99hqkDM30woZKlLIpPfK5B6-nHTg-G2"
+GCS_BUCKET_NAME = "histology-audio-feedback-roba"
 cases = sorted([
     d for d in os.listdir("data")
     if os.path.isdir(os.path.join("data", d))
@@ -57,6 +60,46 @@ if os.path.exists(text_path):
 else:
     case_info = "No information available."
 
+def save_audio_file(audio_bytes, case, selected_mask_file, reviewer):
+    os.makedirs("audio_feedback", exist_ok=True)
+
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    mask_name = os.path.splitext(selected_mask_file)[0]
+    reviewer_clean = reviewer.replace(" ", "_") if reviewer else "unknown"
+
+    filename = f"{timestamp}_{reviewer_clean}_{case}_{mask_name}.wav"
+    filepath = os.path.join("audio_feedback", filename)
+
+    with open(filepath, "wb") as f:
+        f.write(audio_bytes)
+
+    return filepath
+
+def upload_audio_to_gcs(audio_bytes, case, selected_mask_file, reviewer):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    mask_name = os.path.splitext(selected_mask_file)[0]
+    reviewer_clean = reviewer.replace(" ", "_") if reviewer else "unknown"
+
+    filename = f"{timestamp}_{reviewer_clean}_{case}_{mask_name}.wav"
+
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"]
+    )
+
+    client = storage.Client(
+        credentials=creds,
+        project=st.secrets["gcp_service_account"]["project_id"]
+    )
+
+    bucket = client.bucket(GCS_BUCKET_NAME)
+    blob = bucket.blob(filename)
+
+    blob.upload_from_string(
+        audio_bytes,
+        content_type="audio/wav"
+    )
+
+    return f"gs://{GCS_BUCKET_NAME}/{filename}"
 
 def create_overlay(image, mask, alpha=0.4):
     image = image.convert("RGB")
@@ -179,13 +222,32 @@ with right:
         horizontal=True
     )
     feedback = st.text_area(
-        "Reviewer feedback",
+        "Text feedback",
         height=150,
         key=f"feedback_{case}_{selected_mask_file}"
+    )
+    ## voice feedback
+    st.markdown("### Voice Feedback")
+
+    audio_bytes = audio_recorder(
+        text="Click to record, then click to save the voicenote",
+        recording_color="#e74c3c",
+        neutral_color="#6aa36f",
+        icon_name="microphone",
+        icon_size="2x",
     )
 
     if st.button("Submit feedback"):
         sheet = connect_to_sheet()
+        audio_link = ""
+
+        if audio_bytes:
+            audio_link = upload_audio_to_gcs(
+                audio_bytes,
+                case,
+                selected_mask_file,
+                reviewer
+            )
 
         sheet.append_row([
             datetime.now().isoformat(),
@@ -193,7 +255,10 @@ with right:
             case,
             selected_mask_file,
             quality_score,
-            feedback
+            feedback,
+            "Yes" if audio_bytes else "No",
+            audio_link
         ])
 
         st.success("Feedback submitted.")
+    
