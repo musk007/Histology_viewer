@@ -167,15 +167,14 @@ with right:
 
     st.markdown("### Review checklist")
     st.markdown("""
-    - Check image quality
-    - Check segmentation accuracy
-    - Check missed regions
-    - Check over-segmentation
-    - Check under-segmentation
+    - Clarity & correctness of text
+    - Accuracy of described morphology
+    - Do instructions reflect intended reasoning dimension?
+    - Any correction or notes to add
     """)
     reviewer = st.text_input("Reviewer name")
     quality_score = st.radio(
-        "Segmentation quality",
+        "Instructions quality",
         ["Excellent", "Good", "Fair", "Poor"],
         horizontal=True
     )
