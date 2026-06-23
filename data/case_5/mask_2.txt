@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the inferior peripheral focus of solid, poorly differentiated tumor composed of densely packed cells with virtually absent glandular lumina and sheet-like growth.
+
+##### Spatial Reasoning
+Select the broad band of tumor along the inferior rim of the tissue disc, abutting the outer edge.
+
+##### Ambiguity Reasoning
+Isolate the area where tumor cells lose rounded acinar contours and open lumina seen in adjacent more gland-forming regions.
+          

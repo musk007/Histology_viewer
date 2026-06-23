@@ -1,0 +1,11 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral band of fused, back-to-back small glands with reduced, irregular lumina and minimal intervening stroma, lacking solid sheets.
+
+##### Spatial Reasoning
+Select the continuous outer rim of tumor glands encircling the tissue disk along the capsule-facing edge.
+          

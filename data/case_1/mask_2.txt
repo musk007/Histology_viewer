@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the infiltrative area of fused, poorly formed glands with irregular narrow lumina and minimal intervening stroma, lacking well-circumscribed round benign acini.
+
+##### Spatial Reasoning
+Select the broad confluent glandular focus along the inferior-right peripheral portion of the tissue disc.
+
+##### Ambiguity Reasoning
+Isolate the region where glands appear more crowded and fused compared with the better-separated benign-appearing acini elsewhere.

@@ -1,0 +1,6 @@
+streamlit
+pillow
+numpy
+pandas
+gspread
+google-auth

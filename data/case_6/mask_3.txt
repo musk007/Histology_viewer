@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral tumor composed of scattered single cells and loose cords within fibrotic stroma, lacking well-formed glandular lumina or acinar structures.
+
+##### Spatial Reasoning
+Select the discontinuous infiltrative carcinoma along the outer left and right rim of the tissue disc, surrounding the central nodular tumor mass.
+
+##### Hierarchical Reasoning
+Isolate the more subtle, less cellular peripheral component rather than the dominant central solid tumor nodule.
+          

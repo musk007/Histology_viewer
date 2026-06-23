@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : Adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the large, branching adenomatous gland with elongated villous projections, crowded columnar cells, reduced goblet mucin, and irregular but still lumen-forming architecture.
+
+##### Spatial Reasoning
+Select the dominant villous gland occupying most of the central and right portion of the image, extending from top to bottom edge.
+
+##### Hierarchical Reasoning
+Isolate the largest and most expansive gland, broader and more villiform than the adjacent smaller round crypts.
+              

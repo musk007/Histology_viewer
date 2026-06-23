@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact focus of fused, poorly formed glands with crowded atypical nuclei and irregular slit-like lumina embedded within fibromuscular stroma.
+
+##### Spatial Reasoning
+Select the superior-central epithelial cluster along the inner rim of the tissue circle, between larger benign-appearing round glands.
+
+##### Ambiguity Reasoning
+Isolate the area where glands are more confluent and irregular, lacking the round, well-spaced lumina of adjacent benign glands.

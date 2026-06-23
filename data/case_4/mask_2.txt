@@ -1,0 +1,11 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral band of well-formed, round to oval microacinar glands with open lumina separated by fibromuscular stroma, lacking gland fusion or solid areas.
+
+Spatial Reasoning
+Select the continuous outer circumferential rim of glands along the left and inferior edge of the tissue core.
+          

@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : Healthy
+
+#### Description
+##### Histological Reasoning
+Segment the elongated longitudinal colonic crypt with smooth parallel contours, abundant mucin-rich goblet cells, and basally aligned uniform nuclei, lacking architectural atypia.
+
+##### Spatial Reasoning
+Select the superficial mucosal crypt located in the upper-left region, directly above the fibrous pink submucosa and left of the dense lymphoid aggregate.
+
+##### Hierarchical Reasoning
+Isolate the most elongated, vertically oriented crypt among the superficial glands in this field.
+              
