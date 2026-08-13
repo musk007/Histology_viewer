@@ -35,8 +35,11 @@ def find_image(folder, basename):
     raise FileNotFoundError(
         f"Could not find {basename} with extensions {extensions}"
     )
+@st.cache_data
+def load_image(path):
+    return Image.open(path).copy()
 
-image = Image.open(find_image(case_path, "image"))
+# image = Image.open(find_image(case_path, "image"))
 
 mask_files = sorted([
     f for f in os.listdir(case_path)
@@ -49,7 +52,13 @@ selected_mask_file = st.sidebar.selectbox(
     mask_files
 )
 
-mask = Image.open(os.path.join(case_path, selected_mask_file))
+# mask = Image.open(os.path.join(case_path, selected_mask_file))
+
+image = load_image(find_image(case_path, "image"))
+
+mask = load_image(
+    os.path.join(case_path, selected_mask_file)
+)
 
 text_file = os.path.splitext(selected_mask_file)[0] + ".txt"
 text_path = os.path.join(case_path, text_file)
