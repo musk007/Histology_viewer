@@ -126,15 +126,23 @@ def create_overlay(image, mask, alpha=0.4):
 
     return Image.fromarray(blended)
 
+@st.cache_data
+def image_to_base64(image_bytes):
+    return base64.b64encode(image_bytes).decode()
+
+
 def display_openseadragon(img):
     buffer = BytesIO()
     img.save(buffer, format="PNG")
-    img_base64 = base64.b64encode(buffer.getvalue()).decode()
+
+    img_base64 = image_to_base64(buffer.getvalue())
 
     html_code = f"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
-    <div id="openseadragon-viewer" style="width:100%; height:750px; border:1px solid #ddd;"></div>
+    <div id="openseadragon-viewer"
+         style="width:100%; height:750px; border:1px solid #ddd;">
+    </div>
 
     <script>
     var viewer = OpenSeadragon({{
