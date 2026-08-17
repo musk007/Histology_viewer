@@ -218,8 +218,15 @@ with right:
             title, text = section.split(":", 1)
 
             st.markdown(f"#### {title.strip()}")
+
             clean_text = text.strip().strip('"').replace("\n", " ")
-            st.write(clean_text)
+
+            edited_text = st.text_area(
+                f"Edit {title.strip()}",
+                value=clean_text,
+                height=120,
+                key=f"edit_{case}_{selected_mask_file}_{title.strip()}"
+            )
 
         else:
             st.write(section.strip())
