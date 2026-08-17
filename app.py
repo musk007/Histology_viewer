@@ -138,7 +138,11 @@ def image_to_base64(image_bytes):
     return base64.b64encode(image_bytes).decode()
 
 
-def display_openseadragon(image_path):
+def display_openseadragon(img):
+    buffer = BytesIO()
+    img.save(buffer, format="PNG")
+    img_base64 = base64.b64encode(buffer.getvalue()).decode()
+
     html_code = f"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
@@ -147,15 +151,12 @@ def display_openseadragon(image_path):
     </div>
 
     <script>
-    const imageUrl =
-        window.parent.location.origin + "/app/static/{image_path}";
-
     var viewer = OpenSeadragon({{
         id: "openseadragon-viewer",
         prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
         tileSources: {{
             type: "image",
-            url: imageUrl
+            url: "data:image/png;base64,{img_base64}"
         }},
         showNavigator: true,
         showHomeControl: true,
@@ -206,10 +207,12 @@ with left:
 with center:
     st.subheader(selected_view)
 
-    if selected_view == "Original Image":
-        display_openseadragon(image_url)
-    elif selected_view == "Mask":
-        display_openseadragon(mask_url)
+    if selected_view == "Overlay":
+        display_openseadragon(overlay)
+    elif selected_view == "Original Image":
+        display_openseadragon(image)
+    else:
+        display_openseadragon(mask)
 
 with right:
     st.subheader("Information")
