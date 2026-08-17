@@ -213,6 +213,8 @@ with right:
 
     sections = case_info.strip().split("\n\n")
 
+    edited_sections = []
+    
     for section in sections:
         if ":" in section:
             title, text = section.split(":", 1)
@@ -228,6 +230,9 @@ with right:
                 key=f"edit_{case}_{selected_mask_file}_{title.strip()}",
                 label_visibility="collapsed"
             )
+            edited_sections.append(
+                f"{title.strip()}: {edited_text}"
+            )
 
         else:
             clean_text = section.strip()
@@ -239,6 +244,7 @@ with right:
                 key=f"edit_{case}_{selected_mask_file}_{hash(section)}",
                 label_visibility="collapsed"
             )
+            edited_sections.append(edited_text)
 
 
     st.markdown("### Review checklist")
@@ -281,7 +287,7 @@ with right:
                 selected_mask_file,
                 reviewer
             )
-
+        edited_instructions = "\n\n".join(edited_sections)
         sheet.append_row([
             datetime.now().isoformat(),
             reviewer,
@@ -290,7 +296,8 @@ with right:
             quality_score,
             feedback,
             "Yes" if audio_bytes else "No",
-            audio_link
+            audio_link,
+            edited_instructions
         ])
 
         st.success("Feedback submitted.")
