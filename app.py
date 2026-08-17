@@ -213,6 +213,7 @@ with right:
 
     sections = case_info.strip().split("\n\n")
 
+    original_sections = []
     edited_sections = []
     
     for section in sections:
@@ -220,6 +221,9 @@ with right:
             title, text = section.split(":", 1)
 
             clean_text = text.strip().strip('"').replace("\n", " ")
+            original_sections.append(
+                f"{title.strip()}: {clean_text}"
+            )
 
             st.markdown(f"#### {title.strip()}")
 
@@ -237,6 +241,8 @@ with right:
         else:
             clean_text = section.strip()
 
+            original_sections.append(clean_text)
+
             edited_text = st.text_area(
                 "Edit text",
                 value=clean_text,
@@ -244,6 +250,7 @@ with right:
                 key=f"edit_{case}_{selected_mask_file}_{hash(section)}",
                 label_visibility="collapsed"
             )
+
             edited_sections.append(edited_text)
 
 
@@ -287,6 +294,7 @@ with right:
                 selected_mask_file,
                 reviewer
             )
+        original_instructions = "\n\n".join(original_sections)
         edited_instructions = "\n\n".join(edited_sections)
         sheet.append_row([
             datetime.now().isoformat(),
@@ -297,6 +305,7 @@ with right:
             feedback,
             "Yes" if audio_bytes else "No",
             audio_link,
+            original_instructions,
             edited_instructions
         ])
 
