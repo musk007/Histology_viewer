@@ -59,6 +59,7 @@ image_filename = os.path.basename(
 
 image_url = f"{case}/{image_filename}"
 mask_url = f"{case}/{selected_mask_file}"
+image_dzi_url = f"app/static/{case}/image_dzi.dzi"
 
 
 image = load_image(find_image(case_path, "image"))
@@ -172,6 +173,33 @@ def display_openseadragon(img):
 
     components.html(html_code, height=780)
 
+def display_openseadragon_dzi(dzi_url):
+    html_code = f"""
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+
+    <div id="openseadragon-viewer"
+         style="width:100%; height:750px; border:1px solid #ddd;">
+    </div>
+
+    <script>
+    var viewer = OpenSeadragon({{
+        id: "openseadragon-viewer",
+        prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+        tileSources: "{dzi_url}",
+        showNavigator: true,
+        showHomeControl: true,
+        gestureSettingsMouse: {{
+            clickToZoom: true,
+            dblClickToZoom: true,
+            dragToPan: true,
+            scrollToZoom: true
+        }}
+    }});
+    </script>
+    """
+
+    components.html(html_code, height=780)
+    
 
 def connect_to_sheet():
     scopes = [
@@ -207,12 +235,14 @@ with left:
 with center:
     st.subheader(selected_view)
 
-    if selected_view == "Overlay":
-        display_openseadragon(overlay)
-    elif selected_view == "Original Image":
-        display_openseadragon(image)
-    else:
-        display_openseadragon(mask)
+    if selected_view == "Original Image":
+        display_openseadragon_dzi(image_dzi_url)
+    # if selected_view == "Overlay":
+    #     display_openseadragon(overlay)
+    # elif selected_view == "Original Image":
+    #     display_openseadragon(image)
+    # else:
+    #     display_openseadragon(mask)
 
 with right:
     st.subheader("Information")
