@@ -217,12 +217,12 @@ with right:
         if ":" in section:
             title, text = section.split(":", 1)
 
-            st.markdown(f"{title.strip()}")
-
             clean_text = text.strip().strip('"').replace("\n", " ")
 
+            st.markdown(f"#### {title.strip()}")
+
             edited_text = st.text_area(
-                "Edit instruction",
+                "Edit text",
                 value=clean_text,
                 height=120,
                 key=f"edit_{case}_{selected_mask_file}_{title.strip()}",
@@ -230,7 +230,15 @@ with right:
             )
 
         else:
-            st.write(section.strip())
+            clean_text = section.strip()
+
+            edited_text = st.text_area(
+                "Edit text",
+                value=clean_text,
+                height=120,
+                key=f"edit_{case}_{selected_mask_file}_{hash(section)}",
+                label_visibility="collapsed"
+            )
 
 
     st.markdown("### Review checklist")
