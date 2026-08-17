@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact sheet-like tumor focus composed of densely packed atypical cells with essentially absent true glandular lumina, infiltrating within fibromyxoid stroma.
+      
+##### Spatial Reasoning
+Select the broad inferior-left tumor band running along the outer edge of the tissue disc, deep to the capsule-like stromal rim.
+
+##### Hierarchical Reasoning
+Segment the tumor region classified as the highest grade with the worst prognosis.
+          

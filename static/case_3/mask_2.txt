@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral wedge-shaped cluster of well-formed, round microacinar glands with open lumina and intervening fibromuscular stroma, lacking gland fusion or solid areas.
+               
+##### Spatial Reasoning
+Select the elongated wedge of glands along the superior-right tissue edge, tapering toward the outer blank background.

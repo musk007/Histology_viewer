@@ -1,0 +1,11 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact cluster of fused, poorly formed glands with irregular narrow lumina and crowded nuclei embedded in fibromuscular stroma.
+
+##### Spatial Reasoning
+Select the small glandular cluster located along the superior-right peripheral edge of the circular tissue core.
+          

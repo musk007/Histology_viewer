@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the elongated band of Gleason grade 4 carcinoma with fused, crowded glands and irregular slit-like lumina embedded within desmoplastic stroma.
+
+##### Spatial Reasoning
+Select the obliquely oriented epithelial tract extending from the upper-left toward the central-lower portion of the tissue disc.
+
+##### Hierarchical Reasoning
+Isolate the largest continuous focus of fused carcinoma glands, more extensive than any other tumor cluster in the section.
+          

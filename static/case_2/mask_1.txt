@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact band of fused, crowded glands with irregular, slit-like lumina and minimal intervening stroma forming a continuous cluster of Gleason pattern 4 carcinoma.
+
+##### Spatial Reasoning
+Select the elongated glandular cluster running along the inferior peripheral edge of the tissue disc.
+
+##### Ambiguity Reasoning
+Isolate the more confluent, back-to-back glands lacking round, well-separated lumina seen in adjacent better-formed acini.
+          

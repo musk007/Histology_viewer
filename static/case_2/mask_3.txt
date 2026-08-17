@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral cluster of well-formed, round microacinar glands with open lumina and relatively uniform nuclei, separated by fibromuscular stroma.
+
+##### Spatial Reasoning
+Select the compact acinar cluster located along the inferior-right edge of the tissue disc, abutting the outer stromal boundary.

@@ -1,0 +1,14 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the central broad area of fused, poorly formed glands with crowded epithelial cells and irregular slit-like lumina lacking discrete intervening stroma.
+
+##### Spatial Reasoning
+Select the dominant central cluster of tumor glands extending from the superior edge toward the midline of the circular tissue core.
+
+##### Hierarchical Reasoning
+Identify the largest confluent focus of carcinoma, more expansive than the surrounding smaller, better-formed peripheral glands.
+          

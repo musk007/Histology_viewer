@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : Adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral, vertically oriented tubular crypt showing an open elongated lumen, abundant goblet cell mucin, and orderly single-layer epithelium with basal nuclei."
+
+##### Spatial Reasoning
+Select the isolated crypt along the extreme superior-left edge of the tissue, partially cut off by the image border.
+
+##### Hierarchical Reasoning
+Identify the relatively narrow, elongated crypt smaller than the broader, more expanded glands toward the image center.
