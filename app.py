@@ -51,8 +51,14 @@ selected_mask_file = st.sidebar.selectbox(
     "Select overlay",
     mask_files
 )
-image_url = f"app/static/{case}/image.png"
-mask_url = f"app/static/{case}/{selected_mask_file}"
+static_case_path = os.path.join("static", case)
+
+image_filename = os.path.basename(
+    find_image(static_case_path, "image")
+)
+
+image_url = f"/app/static/{case}/{image_filename}"
+mask_url = f"/app/static/{case}/{selected_mask_file}"
 
 
 image = load_image(find_image(case_path, "image"))
