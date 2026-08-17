@@ -199,7 +199,7 @@ def display_openseadragon_dzi(dzi_url):
     """
 
     components.html(html_code, height=780)
-    
+
 
 def connect_to_sheet():
     scopes = [
