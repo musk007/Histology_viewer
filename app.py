@@ -54,11 +54,11 @@ selected_mask_file = st.sidebar.selectbox(
 static_case_path = os.path.join("static", case)
 
 image_filename = os.path.basename(
-    find_image(static_case_path, "image")
+    find_image(os.path.join("static", case), "image")
 )
 
-image_url = f"app/static/{case}/{image_filename}"
-mask_url = f"app/static/{case}/{selected_mask_file}"
+image_url = f"{case}/{image_filename}"
+mask_url = f"{case}/{selected_mask_file}"
 
 
 image = load_image(find_image(case_path, "image"))
@@ -138,7 +138,7 @@ def image_to_base64(image_bytes):
     return base64.b64encode(image_bytes).decode()
 
 
-def display_openseadragon(image_url):
+def display_openseadragon(image_path):
     html_code = f"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
@@ -147,12 +147,15 @@ def display_openseadragon(image_url):
     </div>
 
     <script>
+    const imageUrl =
+        window.parent.location.origin + "/app/static/{image_path}";
+
     var viewer = OpenSeadragon({{
         id: "openseadragon-viewer",
         prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
         tileSources: {{
             type: "image",
-            url: "{image_url}"
+            url: imageUrl
         }},
         showNavigator: true,
         showHomeControl: true,
