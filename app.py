@@ -210,6 +210,10 @@ with center:
 
 with right:
     st.subheader("Information")
+    st.info(
+        "Review only the currently selected highlighted region. "
+        "Each mask represents one independent review sample."
+    )
 
     sections = case_info.strip().split("\n\n")
 
