@@ -51,8 +51,9 @@ selected_mask_file = st.sidebar.selectbox(
     "Select overlay",
     mask_files
 )
+image_url = f"app/static/{case}/image.png"
+mask_url = f"app/static/{case}/{selected_mask_file}"
 
-# mask = Image.open(os.path.join(case_path, selected_mask_file))
 
 image = load_image(find_image(case_path, "image"))
 
@@ -131,12 +132,7 @@ def image_to_base64(image_bytes):
     return base64.b64encode(image_bytes).decode()
 
 
-def display_openseadragon(img):
-    buffer = BytesIO()
-    img.save(buffer, format="PNG")
-
-    img_base64 = image_to_base64(buffer.getvalue())
-
+def display_openseadragon(image_url):
     html_code = f"""
     <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
 
@@ -150,7 +146,7 @@ def display_openseadragon(img):
         prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
         tileSources: {{
             type: "image",
-            url: "data:image/png;base64,{img_base64}"
+            url: "{image_url}"
         }},
         showNavigator: true,
         showHomeControl: true,
@@ -201,12 +197,10 @@ with left:
 with center:
     st.subheader(selected_view)
 
-    if selected_view == "Overlay":
-        display_openseadragon(overlay)
-    elif selected_view == "Original Image":
-        display_openseadragon(image)
-    else:
-        display_openseadragon(mask)
+    if selected_view == "Original Image":
+        display_openseadragon(image_url)
+    elif selected_view == "Mask":
+        display_openseadragon(mask_url)
 
 with right:
     st.subheader("Information")
