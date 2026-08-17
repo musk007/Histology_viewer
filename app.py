@@ -222,10 +222,11 @@ with right:
             clean_text = text.strip().strip('"').replace("\n", " ")
 
             edited_text = st.text_area(
-                f"Edit {title.strip()}",
+                "Edit instruction",
                 value=clean_text,
                 height=120,
-                key=f"edit_{case}_{selected_mask_file}_{title.strip()}"
+                key=f"edit_{case}_{selected_mask_file}_{title.strip()}",
+                label_visibility="collapsed"
             )
 
         else:
