@@ -217,7 +217,7 @@ with right:
         if ":" in section:
             title, text = section.split(":", 1)
 
-            st.markdown(f"#### {title.strip()}")
+            st.markdown(f"{title.strip()}")
 
             clean_text = text.strip().strip('"').replace("\n", " ")
 
