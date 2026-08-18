@@ -22,7 +22,7 @@ with title_col:
     st.markdown(
         """
         <h1 style="text-align: center; margin-top: 20px;">
-            Histopathology Dataset Viewer
+            ReferralSeg Dataset Viewer
         </h1>
         """,
         unsafe_allow_html=True
