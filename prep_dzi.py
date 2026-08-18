@@ -2,6 +2,9 @@ import os
 import subprocess
 from PIL import Image
 import numpy as np
+import shutil
+
+
 
 DATA_DIR = "data"
 STATIC_DIR = "static"
@@ -94,7 +97,10 @@ for case in os.listdir(DATA_DIR):
             static_case,
             f"overlay_{mask_name}_dzi"
         )
-
+        shutil.copy(
+            os.path.join(static_case, "image_dzi.dzi"),
+            os.path.join(static_case, "image_dzi.xml")
+        )
         subprocess.run([
             "vips",
             "dzsave",
