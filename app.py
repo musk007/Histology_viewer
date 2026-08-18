@@ -16,7 +16,7 @@ st.set_page_config(layout="wide")
 left_logo, title_col, right_logo = st.columns([1.5, 5, 1.5])
 
 with left_logo:
-    st.image("assets/MBZUAI.png", width=120)
+    st.image("assets/ADIA.png", width=120)
 
 with title_col:
     st.markdown(
@@ -29,7 +29,7 @@ with title_col:
     )
 
 with right_logo:
-    st.image("assets/ADIA.png", width=180)
+    st.image("assets/MBZUAI.png", width=180)
 
 DRIVE_FOLDER_ID = "1m99hqkDM30woZKlLIpPfK5B6-nHTg-G2"
 GCS_BUCKET_NAME = "histology-audio-feedback-roba"
