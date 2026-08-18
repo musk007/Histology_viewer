@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/openseadragon.min.js"></script>
+</head>
+
+<body style="margin:0;">
+    <div id="viewer" style="width:100%; height:750px;"></div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+
+        const caseName = params.get("case");
+        const view = params.get("view");
+        const maskName = params.get("mask");
+
+        let tileSource;
+
+        if (view === "mask") {
+            tileSource = `${caseName}/${maskName}_dzi.dzi`;
+        } else if (view === "overlay") {
+            tileSource = `${caseName}/overlay_${maskName}_dzi.dzi`;
+        } else {
+            tileSource = `${caseName}/image_dzi.dzi`;
+        }
+
+        const viewer = OpenSeadragon({
+            id: "viewer",
+            prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
+            tileSources: tileSource,
+            showNavigator: true,
+            showHomeControl: true,
+            gestureSettingsMouse: {
+                clickToZoom: true,
+                dblClickToZoom: true,
+                dragToPan: true,
+                scrollToZoom: true
+            }
+        });
+    </script>
+</body>
+</html>
