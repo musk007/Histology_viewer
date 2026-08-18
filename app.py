@@ -11,6 +11,14 @@ from datetime import datetime
 from audio_recorder_streamlit import audio_recorder
 from google.cloud import storage
 
+logo_col1, logo_col2, spacer = st.columns([1, 1, 6])
+
+with logo_col1:
+    st.image("assets/MBZUAI.png", width=120)
+
+with logo_col2:
+    st.image("assets/ADIA.png", width=120)
+
 st.set_page_config(layout="wide")
 st.title("Histopathology Dataset Viewer")
 
