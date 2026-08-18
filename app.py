@@ -538,19 +538,19 @@ with center:
 
     if selected_view == "Original Image":
         viewer_url = (
-            "/app/static/viewer.html"
+            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=image"
         )
 
     elif selected_view == "Mask":
         viewer_url = (
-            "/app/static/viewer.html"
+            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=mask&mask={mask_name}"
         )
 
     else:  # Overlay
         viewer_url = (
-            "/app/static/viewer.html"
+            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=overlay&mask={mask_name}"
         )
 

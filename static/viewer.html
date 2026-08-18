@@ -9,21 +9,27 @@
 
     <script>
         const params = new URLSearchParams(window.location.search);
-
+    
         const caseName = params.get("case");
         const view = params.get("view");
         const maskName = params.get("mask");
-
+    
+        const baseUrl =
+            "https://storage.googleapis.com/histology-viewer-tiles-roba/static";
+    
         let tileSource;
-
+    
         if (view === "mask") {
-            tileSource = `${caseName}/${maskName}_dzi.xml`;
+            tileSource =
+                `${baseUrl}/${caseName}/${maskName}_dzi.xml`;
         } else if (view === "overlay") {
-            tileSource = `${caseName}/overlay_${maskName}_dzi.xml`;
+            tileSource =
+                `${baseUrl}/${caseName}/overlay_${maskName}_dzi.xml`;
         } else {
-            tileSource = `${caseName}/image_dzi.xml`;
+            tileSource =
+                `${baseUrl}/${caseName}/image_dzi.xml`;
         }
-
+    
         const viewer = OpenSeadragon({
             id: "viewer",
             prefixUrl: "https://cdnjs.cloudflare.com/ajax/libs/openseadragon/4.1.0/images/",
