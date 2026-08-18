@@ -29,7 +29,7 @@ with title_col:
     )
 
 with right_logo:
-    st.image("assets/MBZUAI.png", width=180)
+    st.image("assets/MBZUAI.png", width=200)
 
 DRIVE_FOLDER_ID = "1m99hqkDM30woZKlLIpPfK5B6-nHTg-G2"
 GCS_BUCKET_NAME = "histology-audio-feedback-roba"
