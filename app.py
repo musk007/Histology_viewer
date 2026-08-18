@@ -538,19 +538,19 @@ with center:
 
     if selected_view == "Original Image":
         viewer_url = (
-            f"http://127.0.0.1:8501/app/static/viewer.html"
+            "/app/static/viewer.html"
             f"?case={case}&view=image"
         )
 
     elif selected_view == "Mask":
         viewer_url = (
-            f"http://127.0.0.1:8501/app/static/viewer.html"
+            "/app/static/viewer.html"
             f"?case={case}&view=mask&mask={mask_name}"
         )
 
     else:  # Overlay
         viewer_url = (
-            f"http://127.0.0.1:8501/app/static/viewer.html"
+            "/app/static/viewer.html"
             f"?case={case}&view=overlay&mask={mask_name}"
         )
 
