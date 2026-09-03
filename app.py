@@ -10,8 +10,23 @@ from google.oauth2.service_account import Credentials
 from datetime import datetime
 from audio_recorder_streamlit import audio_recorder
 from google.cloud import storage
+import time
+import uuid
+import json
+import pandas as pd
+# import streamlit_hotkeys as hotkeys
+
+APP_VERSION = "2.0.0"
 
 st.set_page_config(layout="wide")
+# hotkeys.activate(
+#     [
+#         hotkeys.hk("rating_1", code="Digit1"),
+#         hotkeys.hk("rating_2", code="Digit2"),
+#         hotkeys.hk("rating_3", code="Digit3"),
+#     ],
+#     key="rating_hotkeys",
+# )
 
 left_logo, title_col, right_logo = st.columns([1.5, 5, 1.5])
 
@@ -59,9 +74,77 @@ if "case_index" not in st.session_state:
 if "mask_index" not in st.session_state:
     st.session_state.mask_index = 0
 
+if "review_state" not in st.session_state:
+    st.session_state.review_state = {}
+
+def preserve_review_state():
+
+    if "review_state" not in st.session_state:
+        st.session_state.review_state = {}
+
+    # First preserve temporary Tier 2 correction widgets
+    for key in list(st.session_state.keys()):
+
+        if key.startswith("_tier2_widget_"):
+
+            permanent_key = key.replace(
+                "_tier2_widget_",
+                "",
+                1
+            )
+
+            st.session_state[permanent_key] = (
+                st.session_state[key]
+            )
+
+            st.session_state.review_state[permanent_key] = (
+                st.session_state[key]
+            )
+
+    prefixes = (
+        "quality_",
+        "issue_tags_",
+        "correction_",
+        "histological_",
+        "spatial_",
+        "hierarchical_",
+        "disambiguating_",
+        "grounding_",
+    )
+
+    for key in list(st.session_state.keys()):
+        if key.startswith(prefixes):
+            st.session_state.review_state[key] = (
+                st.session_state[key]
+            )
+
+
+def restore_review_state(case, selected_mask_file):
+    if "review_state" not in st.session_state:
+        return
+
+    suffix = f"{case}_{selected_mask_file}"
+
+    for key, value in st.session_state.review_state.items():
+        if key.endswith(suffix) and key not in st.session_state:
+            st.session_state[key] = value
 
 def mark_unsaved():
     st.session_state.unsaved_changes = True
+
+def preserve_tier1_text(case, selected_mask_file):
+    st.session_state.unsaved_changes = True
+
+    if "review_state" not in st.session_state:
+        st.session_state.review_state = {}
+
+    correction_key = f"correction_{case}_{selected_mask_file}"
+
+    if correction_key in st.session_state:
+        st.session_state.review_state[correction_key] = (
+            st.session_state[correction_key]
+        )
+
 
 
 # --------------------------------------------------
@@ -72,6 +155,7 @@ cases = sorted([
     d for d in os.listdir("data")
     if os.path.isdir(os.path.join("data", d))
 ])
+
 
 
 # --------------------------------------------------
@@ -95,7 +179,336 @@ def connect_to_sheet():
 
     return sheet
 
+@st.cache_resource
+def connect_to_in_progress_sheet():
+    scopes = [
+        "https://www.googleapis.com/auth/spreadsheets",
+        "https://www.googleapis.com/auth/drive"
+    ]
 
+    creds = Credentials.from_service_account_info(
+        st.secrets["gcp_service_account"],
+        scopes=scopes
+    )
+
+    client = gspread.authorize(creds)
+    workbook = client.open("Histology_Feedback")
+
+    return workbook.worksheet("In_Progress")
+
+@st.cache_data(ttl=60)
+def get_in_progress_row_map():
+    sheet = connect_to_in_progress_sheet()
+    rows = sheet.get_all_records()
+
+    row_map = {}
+
+    for row_number, row in enumerate(rows, start=2):
+        reviewer_name = str(row.get("Reviewer", "")).strip()
+        case_name = str(row.get("Case", "")).strip()
+        mask_name = str(row.get("Mask", "")).strip()
+        submission_type = str(
+            row.get("Submission Type", "")
+        ).strip()
+
+        if reviewer_name and case_name and mask_name:
+            row_map[
+                (
+                    reviewer_name,
+                    case_name,
+                    mask_name,
+                    submission_type,
+                )
+            ] = row_number
+
+    return row_map
+
+@st.cache_data(ttl=60)
+def get_in_progress_draft(
+    reviewer,
+    case,
+    mask,
+    submission_type,
+):
+    if reviewer is None:
+        return None
+
+    sheet = connect_to_in_progress_sheet()
+    rows = sheet.get_all_records()
+
+    matching_rows = [
+        row
+        for row in rows
+        if (
+            str(row.get("Reviewer", "")).strip() == reviewer
+            and str(row.get("Case", "")).strip() == case
+            and str(row.get("Mask", "")).strip() == mask
+            and str(
+                row.get("Submission Type", "")
+            ).strip() == submission_type
+        )
+    ]
+
+    if not matching_rows:
+        return None
+
+    return max(
+        matching_rows,
+        key=lambda row: str(next(iter(row.values()), ""))
+    )
+
+def rating_keyboard_shortcuts(component_key):
+
+    components.html(
+        """
+        <script>
+        const doc = window.parent.document;
+
+        function isRatingGroup(group) {
+            const labels = Array.from(
+                group.querySelectorAll("label")
+            );
+
+            const texts = labels.map(
+                label => label.innerText.trim()
+            );
+
+            return (
+                texts.some(t => t.startsWith("1 —")) &&
+                texts.some(t => t.startsWith("2 —")) &&
+                texts.some(t => t.startsWith("3 —"))
+            );
+        }
+
+
+        function handleRatingShortcut(event) {
+
+            if (!["1", "2", "3"].includes(event.key)) {
+                return;
+            }
+
+
+            const activeElement = doc.activeElement;
+
+            const activeTag =
+                activeElement?.tagName?.toLowerCase();
+
+            const activeType =
+                activeElement?.type?.toLowerCase();
+
+
+            // Block shortcuts only while actually typing.
+            // Radio buttons are allowed.
+            if (
+                activeTag === "textarea" ||
+                activeTag === "select" ||
+                (
+                    activeTag === "input" &&
+                    activeType !== "radio"
+                )
+            ) {
+                return;
+            }
+
+
+            const radioGroups = Array.from(
+                doc.querySelectorAll(
+                    '[role="radiogroup"]'
+                )
+            ).filter(isRatingGroup);
+
+
+            if (radioGroups.length === 0) {
+                return;
+            }
+
+
+            let targetGroup = null;
+
+
+            // ------------------------------------------
+            // 1. Prefer the currently focused
+            //    rating group.
+            // ------------------------------------------
+
+            if (activeElement) {
+
+                const focusedGroup =
+                    activeElement.closest?.(
+                        '[role="radiogroup"]'
+                    );
+
+                if (
+                    focusedGroup &&
+                    isRatingGroup(focusedGroup)
+                ) {
+                    targetGroup = focusedGroup;
+                }
+            }
+
+
+            // ------------------------------------------
+            // 2. Otherwise use the last rating group
+            //    the reviewer interacted with.
+            // ------------------------------------------
+
+            if (
+                !targetGroup &&
+                window.parent._lastRatingGroup &&
+                doc.contains(
+                    window.parent._lastRatingGroup
+                )
+            ) {
+                targetGroup =
+                    window.parent._lastRatingGroup;
+            }
+
+
+            // ------------------------------------------
+            // 3. Otherwise choose the first unrated
+            //    group.
+            // ------------------------------------------
+
+            if (!targetGroup) {
+
+                targetGroup = radioGroups.find(
+                    group =>
+                        !group.querySelector(
+                            'input[type="radio"]:checked'
+                        )
+                );
+            }
+
+
+            // ------------------------------------------
+            // 4. Tier 1 / all Tier 2 groups already
+            //    rated: fall back to first group.
+            // ------------------------------------------
+
+            if (!targetGroup) {
+                targetGroup = radioGroups[0];
+            }
+
+
+            const targetLabel = Array.from(
+                targetGroup.querySelectorAll("label")
+            ).find(
+                label =>
+                    label.innerText
+                        .trim()
+                        .startsWith(
+                            event.key + " —"
+                        )
+            );
+
+
+            if (targetLabel) {
+
+                window.parent._lastRatingGroup =
+                    targetGroup;
+
+                targetLabel.click();
+
+                event.preventDefault();
+            }
+        }
+
+
+        // Remember which rating row the reviewer
+        // most recently clicked.
+        function handleRatingClick(event) {
+
+            const group =
+                event.target.closest?.(
+                    '[role="radiogroup"]'
+                );
+
+            if (
+                group &&
+                isRatingGroup(group)
+            ) {
+                window.parent._lastRatingGroup =
+                    group;
+            }
+        }
+
+
+        // Remove old handlers after Streamlit reruns
+        if (window.parent._ratingShortcutHandler) {
+
+            doc.removeEventListener(
+                "keydown",
+                window.parent._ratingShortcutHandler
+            );
+        }
+
+        if (window.parent._ratingClickHandler) {
+
+            doc.removeEventListener(
+                "click",
+                window.parent._ratingClickHandler
+            );
+        }
+
+
+        window.parent._ratingShortcutHandler =
+            handleRatingShortcut;
+
+        window.parent._ratingClickHandler =
+            handleRatingClick;
+
+
+        doc.addEventListener(
+            "keydown",
+            window.parent._ratingShortcutHandler
+        );
+
+        doc.addEventListener(
+            "click",
+            window.parent._ratingClickHandler
+        );
+
+        </script>
+        """,
+        height=0,
+    )
+
+
+def delete_in_progress_draft(
+    reviewer,
+    case,
+    selected_mask_file,
+):
+    sheet = connect_to_in_progress_sheet()
+    row_map = get_in_progress_row_map()
+
+    rows_to_delete = []
+
+    for submission_type in [
+        "Autosave",
+        "Autosave Tier 2",
+    ]:
+        row_number = row_map.get(
+            (
+                reviewer,
+                case,
+                selected_mask_file,
+                submission_type,
+            )
+        )
+
+        if row_number is not None:
+            rows_to_delete.append(row_number)
+
+    # Delete backwards so row numbers do not shift
+    for row_number in sorted(
+        rows_to_delete,
+        reverse=True,
+    ):
+        sheet.delete_rows(row_number)
+
+    get_in_progress_row_map.clear()
+    get_in_progress_draft.clear()
 # --------------------------------------------------
 # Find reviewer resume position
 # --------------------------------------------------
@@ -185,7 +598,122 @@ def get_resume_position(reviewer_name):
     # Everything reviewed
     return len(cases) - 1, 0
 
+def extract_organ(case_info):
+    cancer_type = None
 
+    for line in case_info.splitlines():
+        line = line.strip()
+
+        if line.lower().startswith("- cancer type"):
+            cancer_type = line.split(":", 1)[1].strip()
+            break
+
+    if not cancer_type:
+        return "Unknown"
+
+    cancer_lower = cancer_type.lower()
+
+    if "breast" in cancer_lower:
+        return "Breast"
+
+    if "colon" in cancer_lower or "colorectal" in cancer_lower:
+        return "Colon"
+
+    if "lung" in cancer_lower:
+        return "Lung"
+
+    if "prostate" in cancer_lower:
+        return "Prostate"
+
+    return "Unknown"
+
+
+
+if "session_id" not in st.session_state:
+    st.session_state.session_id = str(uuid.uuid4())
+
+if "review_order" not in st.session_state:
+
+    rng = np.random.default_rng(
+        abs(hash(st.session_state.session_id)) % (2**32)
+    )
+
+    samples_by_organ = {
+        "Breast": [],
+        "Colon": [],
+        "Lung": [],
+        "Prostate": [],
+        "Unknown": [],
+    }
+
+    for case_name in cases:
+        case_dir = os.path.join("data", case_name)
+
+        case_masks = sorted([
+            f for f in os.listdir(case_dir)
+            if f.startswith("mask_")
+            and f.lower().endswith(
+                (".png", ".jpg", ".jpeg", ".bmp")
+            )
+        ])
+
+        for mask_file in case_masks:
+            txt_file = os.path.join(
+                case_dir,
+                os.path.splitext(mask_file)[0] + ".txt"
+            )
+
+            if os.path.exists(txt_file):
+                with open(txt_file, "r", encoding="utf-8") as f:
+                    case_info = f.read()
+
+                organ = extract_organ(case_info)
+            else:
+                organ = "Unknown"
+
+            samples_by_organ.setdefault(
+                organ,
+                []
+            ).append(
+                (case_name, mask_file)
+            )
+
+    # Shuffle samples within each organ
+    for organ in samples_by_organ:
+        rng.shuffle(samples_by_organ[organ])
+
+    organ_order = [
+        "Breast",
+        "Colon",
+        "Lung",
+        "Prostate",
+    ]
+
+    rng.shuffle(organ_order)
+
+    review_order = []
+
+    while any(
+        samples_by_organ[organ]
+        for organ in organ_order
+    ):
+
+        round_organ_order = organ_order.copy()
+        rng.shuffle(round_organ_order)
+
+        for organ in round_organ_order:
+            if samples_by_organ[organ]:
+                review_order.append(
+                    samples_by_organ[organ].pop()
+                )
+
+    # Put unknown samples at the end
+    rng.shuffle(samples_by_organ["Unknown"])
+    review_order.extend(
+        samples_by_organ["Unknown"]
+    )
+
+    st.session_state.review_order = review_order
 # --------------------------------------------------
 # Reviewer selection
 # --------------------------------------------------
@@ -213,16 +741,140 @@ if (
     reviewer is not None
     and reviewer != st.session_state.active_reviewer
 ):
-    resume_case_index, resume_mask_index = get_resume_position(
-        reviewer
-    )
+    # --------------------------------------------------
+    # 1. First try to resume an in-progress draft
+    # --------------------------------------------------
+    in_progress_sheet = connect_to_in_progress_sheet()
+    in_progress_rows = in_progress_sheet.get_all_records()
 
-    st.session_state.case_index = resume_case_index
-    st.session_state.mask_index = resume_mask_index
+    reviewer_drafts = [
+        row for row in in_progress_rows
+        if str(row.get("Reviewer", "")).strip() == reviewer
+        and str(row.get("Status", "")).strip().lower() == "in progress"
+    ]
+
+    found_resume = False
+
+    if reviewer_drafts:
+        # Use the most recently saved draft
+        latest_draft = max(
+            reviewer_drafts,
+            key=lambda row: str(next(iter(row.values()), ""))
+        )
+
+        resume_case = str(
+            latest_draft.get("Case", "")
+        ).strip()
+
+        resume_mask = str(
+            latest_draft.get("Mask", "")
+        ).strip()
+
+        resume_submission_type = str(
+            latest_draft.get("Submission Type", "")
+        ).strip()
+
+        resume_tier = (
+            "Tier 2"
+            if resume_submission_type == "Autosave Tier 2"
+            else "Tier 1"
+        )
+
+        st.session_state[
+            f"tier_{resume_case}_{resume_mask}"
+        ] = resume_tier
+
+        if resume_case in cases:
+            resume_case_dir = os.path.join(
+                "data",
+                resume_case
+            )
+
+            resume_case_masks = sorted([
+                f for f in os.listdir(resume_case_dir)
+                if f.startswith("mask_")
+                and f.lower().endswith(
+                    (".png", ".jpg", ".jpeg", ".bmp")
+                )
+            ])
+
+            if resume_mask in resume_case_masks:
+                st.session_state.case_index = cases.index(
+                    resume_case
+                )
+
+                st.session_state.mask_index = (
+                    resume_case_masks.index(resume_mask)
+                )
+
+                found_resume = True
+
+    # --------------------------------------------------
+    # 2. If no draft exists, use first unreviewed sample
+    # --------------------------------------------------
+    if not found_resume:
+        sheet = connect_to_sheet()
+        rows = sheet.get_all_records()
+
+        reviewer_completed = {
+            (
+                str(row.get("Case", "")).strip(),
+                str(row.get("Mask", "")).strip()
+            )
+            for row in rows
+            if (
+                str(row.get("Reviewer", "")).strip() == reviewer
+                and str(row.get("Status", "")).strip().lower()
+                in ["reviewed", "skipped"]
+            )
+        }
+
+        for resume_case, resume_mask in st.session_state.review_order:
+
+            if (
+                resume_case,
+                resume_mask
+            ) not in reviewer_completed:
+
+                resume_case_index = cases.index(
+                    resume_case
+                )
+
+                resume_case_dir = os.path.join(
+                    "data",
+                    resume_case
+                )
+
+                resume_case_masks = sorted([
+                    f for f in os.listdir(resume_case_dir)
+                    if f.startswith("mask_")
+                    and f.lower().endswith(
+                        (".png", ".jpg", ".jpeg", ".bmp")
+                    )
+                ])
+
+                resume_mask_index = (
+                    resume_case_masks.index(
+                        resume_mask
+                    )
+                )
+
+                st.session_state.case_index = (
+                    resume_case_index
+                )
+
+                st.session_state.mask_index = (
+                    resume_mask_index
+                )
+
+                found_resume = True
+                break
+
     st.session_state.active_reviewer = reviewer
     st.session_state.unsaved_changes = False
 
-    st.rerun()
+    if found_resume:
+        st.rerun()
 
 
 # --------------------------------------------------
@@ -295,10 +947,18 @@ mask_files = sorted([
 if "mask_index" not in st.session_state:
     st.session_state.mask_index = 0
 
+
+if not mask_files:
+    st.error(
+        f"Case '{case}' contains no mask files. "
+        "Use the sidebar to move to another case."
+    )
+    st.stop()
+
 # keep index valid when case changes
-st.session_state.mask_index = min(
-    st.session_state.mask_index,
-    len(mask_files) - 1
+st.session_state.mask_index = max(
+    0,
+    min(st.session_state.mask_index, len(mask_files) - 1)
 )
 
 selected_mask_file = mask_files[st.session_state.mask_index]
@@ -320,11 +980,8 @@ with next_col:
             st.rerun()
 
 st.sidebar.write(selected_mask_file)
-static_case_path = os.path.join("static", case)
 
-image_filename = os.path.basename(
-    find_image(os.path.join("static", case), "image")
-)
+# Tiles are served from GCS, so no local static/ lookup is needed here.
 
 # image_url = f"{case}/{image_filename}"
 # mask_url = f"{case}/{selected_mask_file}"
@@ -371,12 +1028,26 @@ def get_storage_client():
         project=st.secrets["gcp_service_account"]["project_id"]
     )
 
-def upload_audio_to_gcs(audio_bytes, case, selected_mask_file, reviewer):
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+def upload_audio_to_gcs(
+    audio_bytes,
+    case,
+    selected_mask_file,
+    reviewer,
+    version
+):
     mask_name = os.path.splitext(selected_mask_file)[0]
-    reviewer_clean = reviewer.replace(" ", "_") if reviewer else "unknown"
 
-    filename = f"{timestamp}_{reviewer_clean}_{case}_{mask_name}.wav"
+    sample_id = f"{case}_{mask_name}"
+
+    reviewer_id = (
+        reviewer.strip()
+        .lower()
+        .replace(" ", "_")
+    ) if reviewer else "unknown"
+
+    filename = (
+        f"{sample_id}_{reviewer_id}_v{version}.wav"
+    )
 
     client = get_storage_client()
 
@@ -389,6 +1060,35 @@ def upload_audio_to_gcs(audio_bytes, case, selected_mask_file, reviewer):
     )
 
     return f"gs://{GCS_BUCKET_NAME}/{filename}"
+
+def upload_review_json_to_gcs(review_record):
+
+    reviewer_id = review_record["reviewer_id"]
+    sample_id = review_record["sample_id"]
+    version = review_record["version"]
+    record_id = review_record["record_id"]
+
+    filename = (
+        f"review_records/{reviewer_id}/"
+        f"{sample_id}_v{version}_{record_id}.json"
+    )
+
+    client = get_storage_client()
+
+    bucket = client.bucket(GCS_BUCKET_NAME)
+    blob = bucket.blob(filename)
+
+    blob.upload_from_string(
+        json.dumps(
+            review_record,
+            indent=2,
+            ensure_ascii=False
+        ),
+        content_type="application/json"
+    )
+
+    return f"gs://{GCS_BUCKET_NAME}/{filename}"
+
 
 def create_overlay(image, mask, alpha=0.4):
     image = image.convert("RGB")
@@ -462,8 +1162,266 @@ def display_openseadragon_dzi(case):
 
     components.html(html_code, height=780)
 
+def autosave_in_progress(
+    reviewer,
+    case,
+    selected_mask_file,
+    quality_score,
+    issue_tags,
+    correction,
+    feedback,
+    skip_sample,
+    skip_reason,
+    skip_note,
+    flagged,
+):
+    if reviewer is None:
+        return
+
+    sheet = connect_to_in_progress_sheet()
+
+    row_data = [
+        datetime.now().isoformat(),
+        reviewer,
+        case,
+        selected_mask_file,
+        quality_score or "",
+        feedback or "",
+        "No",
+        "",
+        "",
+        "",
+        "Autosave",
+        "|".join(issue_tags),
+        correction or "",
+        "In Progress",
+        skip_reason if skip_sample else "",
+        skip_note if skip_sample else "",
+        "Yes" if flagged else "No",
+        ""
+    ]
+
+    row_map = get_in_progress_row_map()
+
+    existing_row = row_map.get(
+        (
+            reviewer,
+            case,
+            selected_mask_file,
+            "Autosave",
+        )
+    )
+
+    if existing_row is not None:
+        sheet.update(
+            f"A{existing_row}:R{existing_row}",
+            [row_data]
+        )
+
+    else:
+        sheet.append_row(row_data)
+
+    get_in_progress_row_map.clear()
+    get_in_progress_draft.clear()
 
 
+def autosave_current_sample(reviewer, case, selected_mask_file):
+    if "review_state" not in st.session_state:
+        st.session_state.review_state = {}
+
+    tier1_keys = [
+        f"quality_{case}_{selected_mask_file}",
+        f"issue_tags_{case}_{selected_mask_file}",
+        f"correction_{case}_{selected_mask_file}",
+    ]
+
+    for key in tier1_keys:
+        if key in st.session_state:
+            st.session_state.review_state[key] = st.session_state[key]
+
+    if reviewer is None:
+        return
+
+    quality_key = f"quality_{case}_{selected_mask_file}"
+    issue_key = f"issue_tags_{case}_{selected_mask_file}"
+    correction_key = f"correction_{case}_{selected_mask_file}"
+    feedback_key = f"feedback_{case}_{selected_mask_file}"
+    skip_key = f"skip_{case}_{selected_mask_file}"
+    skip_reason_key = f"skip_reason_{case}_{selected_mask_file}"
+    skip_note_key = f"skip_note_{case}_{selected_mask_file}"
+    flag_key = f"flag_{case}_{selected_mask_file}"
+
+    autosave_in_progress(
+        reviewer=reviewer,
+        case=case,
+        selected_mask_file=selected_mask_file,
+        quality_score=st.session_state.get(quality_key),
+        issue_tags=st.session_state.get(issue_key, []),
+        correction=st.session_state.get(correction_key, ""),
+        feedback=st.session_state.get(feedback_key, ""),
+        skip_sample=st.session_state.get(skip_key, False),
+        skip_reason=st.session_state.get(skip_reason_key),
+        skip_note=st.session_state.get(skip_note_key, ""),
+        flagged=st.session_state.get(flag_key, False),
+    )
+
+    st.session_state.unsaved_changes = True
+
+def autosave_tier2_sample(
+    reviewer,
+    case,
+    selected_mask_file,
+    dimensions,
+):
+    preserve_review_state()
+
+    if reviewer is None:
+        return
+
+    sheet = connect_to_in_progress_sheet()
+
+    row_map = get_in_progress_row_map()
+    existing_row = row_map.get(
+        (
+            reviewer,
+            case,
+            selected_mask_file,
+            "Autosave Tier 2",
+        )
+    )
+
+    dim_values = {}
+
+    for dim_key in dimensions.keys():
+
+        rating_key = f"{dim_key}_rating_{case}_{selected_mask_file}"
+        tags_key = f"{dim_key}_tags_{case}_{selected_mask_file}"
+        correction_key = f"{dim_key}_correction_{case}_{selected_mask_file}"
+
+        dim_values[dim_key] = {
+            "rating": st.session_state.get(
+                rating_key,
+                st.session_state.review_state.get(rating_key)
+            ),
+            "tags": st.session_state.get(
+                tags_key,
+                st.session_state.review_state.get(tags_key, [])
+            ),
+            "correction": st.session_state.get(
+                correction_key,
+                st.session_state.review_state.get(correction_key, "")
+            ),
+        }
+
+    grounding = st.session_state.get(
+        f"grounding_{case}_{selected_mask_file}"
+    )
+    skip_sample = st.session_state.get(
+        f"skip_{case}_{selected_mask_file}",
+        False
+    )
+
+    skip_reason = st.session_state.get(
+        f"skip_reason_{case}_{selected_mask_file}"
+    )
+
+    skip_note = st.session_state.get(
+        f"skip_note_{case}_{selected_mask_file}",
+        ""
+    )
+
+    flagged = st.session_state.get(
+        f"flag_{case}_{selected_mask_file}",
+        False
+    )
+
+    # For now, store Tier 2 state compactly in existing sheet fields
+    feedback = st.session_state.get(
+        f"feedback_{case}_{selected_mask_file}",
+        ""
+    )
+
+    tier2_payload = {
+        "dimensions": dim_values,
+        "grounding": grounding,
+        "feedback": feedback,
+        "skip": skip_sample,
+        "skip_reason": skip_reason,
+        "skip_note": skip_note,
+        "flagged": flagged,
+    }
+
+    import json
+
+    row_data = [
+        datetime.now().isoformat(),
+        reviewer,
+        case,
+        selected_mask_file,
+        "",
+        json.dumps(tier2_payload),
+        "No",
+        "",
+        "",
+        "",
+        "Autosave Tier 2",
+        "",
+        "",
+        "In Progress",
+        "",
+        "",
+        "No",
+        ""
+    ]
+
+    if existing_row is not None:
+        sheet.update(
+            f"A{existing_row}:R{existing_row}",
+            [row_data]
+        )
+    else:
+        sheet.append_row(row_data)
+
+    get_in_progress_row_map.clear()
+    get_in_progress_draft.clear()
+
+    st.session_state.unsaved_changes = True
+
+def save_tier2_correction(
+    reviewer,
+    case,
+    selected_mask_file,
+    dimensions,
+    dim_key,
+):
+    if "review_state" not in st.session_state:
+        st.session_state.review_state = {}
+
+    # Temporary Streamlit widget key
+    widget_key = (
+        f"_tier2_widget_{dim_key}_correction_"
+        f"{case}_{selected_mask_file}"
+    )
+
+    # Permanent key used everywhere else in the app
+    correction_key = (
+        f"{dim_key}_correction_"
+        f"{case}_{selected_mask_file}"
+    )
+
+    value = st.session_state.get(widget_key, "")
+
+    # Store permanently
+    st.session_state[correction_key] = value
+    st.session_state.review_state[correction_key] = value
+
+    # Then autosave all Tier 2 values
+    autosave_tier2_sample(
+        reviewer,
+        case,
+        selected_mask_file,
+        dimensions,
+    )
 
 @st.cache_data(ttl=300)
 def get_completed_reviews():
@@ -476,8 +1434,14 @@ def get_completed_reviews():
         reviewer_name = str(row.get("Reviewer", "")).strip()
         case_name = str(row.get("Case", "")).strip()
         mask_name = str(row.get("Mask", "")).strip()
+        status = str(row.get("Status", "")).strip().lower()
 
-        if reviewer_name and case_name and mask_name:
+        if (
+            reviewer_name
+            and case_name
+            and mask_name
+            and status in ["reviewed", "skipped"]
+        ):
             completed.add(
                 (reviewer_name, case_name, mask_name)
             )
@@ -487,6 +1451,52 @@ def get_completed_reviews():
 
 
 completed_reviews = get_completed_reviews()
+
+@st.cache_data(ttl=300)
+def get_review_version(reviewer_name, case_name, mask_name):
+    sheet = connect_to_sheet()
+    rows = sheet.get_all_records()
+
+    versions = []
+
+    for row in rows:
+        if (
+            str(row.get("Reviewer", "")).strip() == reviewer_name
+            and str(row.get("Case", "")).strip() == case_name
+            and str(row.get("Mask", "")).strip() == mask_name
+        ):
+            try:
+                versions.append(int(row.get("Version", 0)))
+            except (TypeError, ValueError):
+                pass
+
+    return max(versions, default=0) + 1
+
+@st.cache_data(ttl=300)
+def get_latest_review(reviewer_name, case_name, mask_name):
+    if reviewer_name is None:
+        return None
+
+    sheet = connect_to_sheet()
+    rows = sheet.get_all_records()
+
+    matching_rows = [
+        row for row in rows
+        if (
+            str(row.get("Reviewer", "")).strip() == reviewer_name
+            and str(row.get("Case", "")).strip() == case_name
+            and str(row.get("Mask", "")).strip() == mask_name
+            and str(row.get("Status", "")).strip().lower()
+            in ["reviewed", "skipped"]
+        )
+    ]
+
+    if not matching_rows:
+        return None
+
+    # Rows are append-only, so the last matching row is the latest version
+    return matching_rows[-1]
+
 
 st.sidebar.divider()
 st.sidebar.subheader("Review Progress")
@@ -527,17 +1537,115 @@ if total_masks > 0:
     st.sidebar.caption(
         f"{completed_masks}/{total_masks} samples reviewed"
     )
+if "show_summary" not in st.session_state:
+    st.session_state.show_summary = False
+
+if st.sidebar.button("Session Summary"):
+    st.session_state.show_summary = True
+    st.rerun()
+    
+def extract_groundtruth(case_info):
+    cancer_type = ""
+    grade = ""
+
+    for line in case_info.splitlines():
+        line = line.strip()
+
+        if line.startswith("- Cancer Type"):
+            cancer_type = line.split(":", 1)[1].strip()
+
+        elif line.startswith("- Grade"):
+            grade = line.split(":", 1)[1].strip()
+
+    return cancer_type, grade
 
 
-overlay = create_overlay(image, mask)
 
+# The overlay is rendered by the GCS tile viewer, so no local blend is needed.
 
 left, center, right = st.columns([0.7, 3.2, 1.6])
 
 
+def autosave_shared_feedback(
+    reviewer,
+    case,
+    selected_mask_file,
+    tier,
+    dimensions,
+):
+    if tier == "Tier 1":
+        autosave_current_sample(
+            reviewer,
+            case,
+            selected_mask_file,
+        )
+    else:
+        autosave_tier2_sample(
+            reviewer,
+            case,
+            selected_mask_file,
+            dimensions,
+        )
+
+def autosave_shared_controls(
+    reviewer,
+    case,
+    selected_mask_file,
+    tier,
+    dimensions,
+):
+    if tier == "Tier 1":
+        autosave_current_sample(
+            reviewer,
+            case,
+            selected_mask_file,
+        )
+    else:
+        autosave_tier2_sample(
+            reviewer,
+            case,
+            selected_mask_file,
+            dimensions,
+        )
+
+
+def extract_dimensions(case_info):
+    dimensions = {}
+    current_dimension = None
+    buffer = []
+
+    mapping = {
+        "Histological Reasoning": "histological",
+        "Spatial Reasoning": "spatial",
+        "Hierarchical Reasoning": "hierarchical",
+        "Disambiguating Reasoning": "disambiguating",
+    }
+
+    for line in case_info.splitlines():
+        clean = line.strip()
+
+        if clean.startswith("#####"):
+            title = clean.replace("#", "").strip()
+
+            if current_dimension and buffer:
+                dimensions[current_dimension] = " ".join(buffer).strip()
+
+            current_dimension = mapping.get(title)
+            buffer = []
+            continue
+
+        if current_dimension and clean:
+            buffer.append(clean)
+
+    if current_dimension and buffer:
+        dimensions[current_dimension] = " ".join(buffer).strip()
+
+    return dimensions
+
 
 with left:
     st.subheader("Images")
+
     selected_view = st.radio(
         "Click to view",
         ["Overlay", "Original Image", "Mask"]
@@ -546,7 +1654,6 @@ with left:
     st.image(image, caption="Original")
     st.image(mask, caption="Mask")
 
-    
 
 with center:
     st.subheader(selected_view)
@@ -555,74 +1662,542 @@ with center:
 
     if selected_view == "Original Image":
         viewer_url = (
-            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
+            "https://storage.googleapis.com/"
+            "histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=image"
         )
 
     elif selected_view == "Mask":
         viewer_url = (
-            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
+            "https://storage.googleapis.com/"
+            "histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=mask&mask={mask_name}"
         )
 
     else:  # Overlay
         viewer_url = (
-            "https://storage.googleapis.com/histology-viewer-tiles-roba/static/viewer.html"
+            "https://storage.googleapis.com/"
+            "histology-viewer-tiles-roba/static/viewer.html"
             f"?case={case}&view=overlay&mask={mask_name}"
         )
 
-    st.iframe(
+    components.iframe(
         viewer_url,
-        height=780
+        height=780,
+        scrolling=False,
     )
 
+
+cancer_type, grade = extract_groundtruth(case_info)
+
+
+
 with right:
-    st.subheader("Information")
+
+    st.markdown(
+        f"""
+<div style="display:flex; gap:8px; margin-bottom:12px;">
+<span style="background:#dceef8; padding:6px 12px; border-radius:16px; font-weight:600; font-size:14px;">{cancer_type}</span>
+<span style="background:#eeeeee; padding:6px 12px; border-radius:16px; font-size:14px;">{grade}</span>
+</div>
+""",
+        unsafe_allow_html=True
+    )
+
+    # Progress
+    sample_number = completed_masks + 1
+    sample_number = min(sample_number, total_masks)
+
+    header_left, header_right = st.columns([2, 1])
+
+    with header_left:
+        st.markdown("### Review")
+
+    with header_right:
+        st.markdown(
+            f"<div style='text-align:right; padding-top:8px;'>"
+            f"Sample {sample_number} of {total_masks}"
+            f"</div>",
+            unsafe_allow_html=True
+        )
+
+    if total_masks > 0:
+        st.progress(completed_masks / total_masks)
 
     st.info(
         "Review only the currently selected highlighted region. "
         "Each mask represents one independent review sample."
     )
+    
 
+    # -------------------------
+    # Instructions
+    # -------------------------
     lines = case_info.splitlines()
 
-    original_sections = []
-    edited_sections = []
 
-    for i, line in enumerate(lines):
-        line = line.strip()
+    description_lines = []
+    in_description = False
 
-        if not line:
+    for line in case_info.splitlines():
+        clean_line = line.strip()
+
+        if not clean_line:
             continue
 
-        if line.startswith("#"):
-            st.markdown(line)
-            original_sections.append(line)
-            edited_sections.append(line)
+        if clean_line.startswith("#### Description"):
+            in_description = True
             continue
 
-        original_sections.append(line)
+        if in_description:
+            if clean_line.startswith("#####"):
+                continue
 
-        edited_text = st.text_area(
-            "Edit text",
-            value=line,
-            height=100,
-            key=f"edit_{case}_{selected_mask_file}_{i}",
-            label_visibility="collapsed",
-            on_change=mark_unsaved
+            description_lines.append(clean_line)
+    
+
+
+    tier = st.radio(
+        "Review mode",
+        ["Tier 1", "Tier 2"],
+        horizontal=True,
+        key=f"tier_{case}_{selected_mask_file}",
+        on_change=preserve_review_state
+    )
+
+    restore_review_state(
+        case,
+        selected_mask_file
+    )
+
+    full_description = "\n\n".join(description_lines)
+
+    if st.session_state.show_summary:
+
+        st.markdown("## Session Summary")
+
+        sheet = connect_to_sheet()
+        rows = sheet.get_all_records()
+
+        reviewer_rows = [
+            row for row in rows
+            if str(row.get("Reviewer", "")).strip() == reviewer
+        ]
+
+        # Keep only completed reviews
+        completed_rows = [
+            row for row in reviewer_rows
+            if str(row.get("Status", "")).strip().lower()
+            in ["reviewed", "skipped"]
+        ]
+
+        # Keep only the latest version of each sample
+        latest_reviews = {}
+
+        for row in completed_rows:
+            key = (
+                str(row.get("Case", "")).strip(),
+                str(row.get("Mask", "")).strip()
+            )
+
+            try:
+                version = int(row.get("Version", 0))
+            except (TypeError, ValueError):
+                version = 0
+
+            if (
+                key not in latest_reviews
+                or version > latest_reviews[key]["version"]
+            ):
+                latest_reviews[key] = {
+                    "version": version,
+                    "row": row
+                }
+
+        latest_rows = [
+            item["row"]
+            for item in latest_reviews.values()
+        ]
+
+        reviewed_count = sum(
+            str(row.get("Status", "")).strip().lower() == "reviewed"
+            for row in latest_rows
         )
 
-        edited_sections.append(edited_text)
+        skipped_count = sum(
+            str(row.get("Status", "")).strip().lower() == "skipped"
+            for row in latest_rows
+        )
 
-        
+        flagged_count = sum(
+            str(row.get("Flagged", "")).strip().lower() == "yes"
+            for row in latest_rows
+        )
+
+        active_times = []
+
+        for row in latest_rows:
+            try:
+                active_times.append(
+                    float(row.get("Active Seconds", 0))
+                )
+            except (TypeError, ValueError):
+                pass
+
+        median_time = (
+            np.median(active_times)
+            if active_times
+            else 0
+        )
+
+        col1, col2 = st.columns(2)
+
+        with col1:
+            st.metric("Reviewed", reviewed_count)
+            st.metric("Flagged", flagged_count)
+
+        with col2:
+            st.metric("Skipped", skipped_count)
+            st.metric(
+                "Median review time",
+                f"{median_time:.0f} sec"
+            )
+
+        st.markdown("### Progress by organ")
+
+        organ_progress = {
+            "Breast": {"completed": 0, "total": 0},
+            "Colon": {"completed": 0, "total": 0},
+            "Lung": {"completed": 0, "total": 0},
+            "Prostate": {"completed": 0, "total": 0},
+            "Unknown": {"completed": 0, "total": 0},
+        }
+
+        for case_name in cases:
+
+            case_dir = os.path.join("data", case_name)
+
+            case_masks = sorted([
+                f for f in os.listdir(case_dir)
+                if f.startswith("mask_")
+                and f.lower().endswith(
+                    (".png", ".jpg", ".jpeg", ".bmp")
+                )
+            ])
+
+            for mask_file in case_masks:
+
+                # Read this sample's metadata to determine organ
+                txt_file = os.path.join(
+                    case_dir,
+                    os.path.splitext(mask_file)[0] + ".txt"
+                )
+
+                if os.path.exists(txt_file):
+                    with open(
+                        txt_file,
+                        "r",
+                        encoding="utf-8"
+                    ) as f:
+                        sample_info = f.read()
+
+                    organ = extract_organ(sample_info)
+
+                else:
+                    organ = "Unknown"
+
+                if organ not in organ_progress:
+                    organ_progress[organ] = {
+                        "completed": 0,
+                        "total": 0,
+                    }
+
+                organ_progress[organ]["total"] += 1
+
+                if (
+                    reviewer,
+                    case_name,
+                    mask_file
+                ) in completed_reviews:
+
+                    organ_progress[organ]["completed"] += 1
+
+
+        # Display progress
+        for organ in [
+            "Breast",
+            "Colon",
+            "Lung",
+            "Prostate",
+            "Unknown",
+        ]:
+
+            stats = organ_progress[organ]
+
+            # Do not display organs with no samples
+            if stats["total"] == 0:
+                continue
+
+            st.write(
+                f"**{organ}:** "
+                f"{stats['completed']}/{stats['total']}"
+            )
+
+            st.progress(
+                stats["completed"] / stats["total"]
+            )
+
+        # -------------------------
+        # Flagged samples
+        # -------------------------
+
+        st.markdown("### Flagged samples")
+
+        flagged_rows = [
+            row
+            for row in latest_rows
+            if str(
+                row.get("Flagged", "")
+            ).strip().lower() == "yes"
+        ]
+
+        if flagged_rows:
+
+            flagged_data = []
+
+            for row in flagged_rows:
+                flagged_data.append({
+                    "Case": row.get("Case", ""),
+                    "Mask": row.get("Mask", ""),
+                    "Tier": row.get("Tier", ""),
+                    "Quality": row.get("Quality", ""),
+                    "Status": row.get("Status", ""),
+                    "Submitted At": row.get(
+                        "Submitted At",
+                        ""
+                    ),
+                })
+
+            flagged_df = pd.DataFrame(flagged_data)
+
+            st.dataframe(
+                flagged_df,
+                use_container_width=True,
+                hide_index=True,
+            )
+
+        else:
+            st.info("No samples are currently flagged.")
+
+
+        # -------------------------
+        # Export
+        # -------------------------
+
+        st.markdown("### Export data")
+
+        if reviewer_rows:
+
+            df = pd.DataFrame(reviewer_rows)
+
+            df = df[
+                df["Status"].astype(str).str.lower().isin(
+                    ["reviewed", "skipped"]
+                )
+            ].copy()
+
+            df["Version_num"] = pd.to_numeric(
+                df["Version"],
+                errors="coerce"
+            ).fillna(0)
+
+            df = (
+                df.sort_values("Version_num")
+                .drop_duplicates(
+                    subset=["Reviewer", "Case", "Mask"],
+                    keep="last"
+                )
+            )
+
+            export_rows = []
+
+            for _, row in df.iterrows():
+                case_name = str(row.get("Case", "")).strip()
+                mask_name = str(row.get("Mask", "")).strip()
+
+                sample_id = (
+                    f"{case_name}_"
+                    f"{os.path.splitext(mask_name)[0]}"
+                )
+
+                reviewer_name = str(row.get("Reviewer", "")).strip()
+
+                reviewer_id = (
+                    reviewer_name.lower().replace(" ", "_")
+                )
+
+                # Recover sample metadata
+                sample_info = ""
+
+                metadata_path = os.path.join(
+                    "data",
+                    case_name,
+                    os.path.splitext(mask_name)[0] + ".txt"
+                )
+
+                if os.path.exists(metadata_path):
+                    with open(metadata_path, "r", encoding="utf-8") as f:
+                        sample_info = f.read()
+
+                organ = extract_organ(sample_info).lower()
+
+                cancer_type, grade = extract_groundtruth(sample_info)
+
+                dataset_name = ""
+
+                for line in sample_info.splitlines():
+                    clean = line.strip()
+
+                    if clean.lower().startswith("- dataset"):
+                        dataset_name = clean.split(":", 1)[1].strip()
+                        break
+
+                # These fields are stored by fixed column position in the sheet
+                voice_note_path = row.iloc[7] if len(row) > 7 else ""
+                session_id_export = row.iloc[21] if len(row) > 21 else ""
+                app_version_export = row.iloc[22] if len(row) > 22 else ""
+
+                export_row = {
+                    "sample_id": sample_id,
+                    "dataset": dataset_name,
+                    "organ": organ,
+
+                    "cancer_type": cancer_type,
+                    "grade_or_class": grade,
+
+                    "reviewer_id": reviewer_id,
+
+                    "Reviewer": reviewer_name,
+                    "Case": case_name,
+                    "Mask": mask_name,
+
+                    "Tier": row.get("Tier", ""),
+                    "Status": row.get("Status", ""),
+
+                    "overall_rating": (
+                        row.get("Quality", "")
+                        if str(row.get("Tier", "")).strip() == "Tier 1"
+                        else ""
+                    ),
+
+                    "overall_issue_tags": (
+                        row.get("Issue Tags", "")
+                        if str(row.get("Tier", "")).strip() == "Tier 1"
+                        else ""
+                    ),
+
+                    "overall_correction": (
+                        row.get("Correction", "")
+                        if str(row.get("Tier", "")).strip() == "Tier 1"
+                        else ""
+                    ),
+
+                    "Flagged": row.get("Flagged", ""),
+                    "Skip Reason": row.get("Skip Reason", ""),
+                    "Skip Note": row.get("Skip Note", ""),
+                    "Feedback": row.get("Feedback", ""),
+
+                    "Version": row.get("Version", ""),
+                    "Started At": row.get("Started At", ""),
+                    "Submitted At": row.get("Submitted At", ""),
+                    "Active Seconds": row.get("Active Seconds", ""),
+
+                    "voice_note_path": voice_note_path,
+                    "session_id": session_id_export,
+                    "app_version": app_version_export,
+                }
+
+                tier2_data = str(
+                    row.get("Tier 2 Data", "")
+                ).strip()
+
+                if tier2_data:
+                    try:
+                        parsed = json.loads(tier2_data)
+
+                        dimensions_data = parsed.get(
+                            "dimensions",
+                            {}
+                        )
+
+                        for dim_key, dim_data in dimensions_data.items():
+
+                            export_row[
+                                f"{dim_key}_shown"
+                            ] = dim_data.get("shown", False)
+
+                            export_row[
+                                f"{dim_key}_rating"
+                            ] = dim_data.get("rating", "")
+
+                            export_row[
+                                f"{dim_key}_tags"
+                            ] = "|".join(
+                                dim_data.get("tags", [])
+                            )
+
+                            export_row[
+                                f"{dim_key}_correction"
+                            ] = dim_data.get(
+                                "correction",
+                                ""
+                            )
+
+                        export_row["grounding"] = (
+                            parsed.get("grounding", "")
+                        )
+
+                    except (
+                        json.JSONDecodeError,
+                        TypeError
+                    ):
+                        pass
+
+                export_rows.append(export_row)
+
+            export_df = pd.DataFrame(export_rows)
+
+            st.dataframe(
+                export_df,
+                use_container_width=True
+            )
+
+            csv_data = export_df.to_csv(
+                index=False
+            ).encode("utf-8")
+
+            st.download_button(
+                label="Export progress CSV",
+                data=csv_data,
+                file_name=(
+                    f"{reviewer.replace(' ', '_')}"
+                    "_review_progress.csv"
+                ),
+                mime="text/csv",
+            )
+
+        else:
+            st.info(
+                "No completed reviews are available for export."
+            )
+
+        if st.button("← Back to review"):
+            st.session_state.show_summary = False
+            st.rerun()
+
+        st.stop()
+
     
-    st.markdown("### Review checklist")
-    st.markdown("""
-    - Clarity & correctness of text
-    - Accuracy of described morphology
-    - Do instructions reflect intended reasoning dimension?
-    - Any correction or notes to add
-    """)
     
 
     already_reviewed = (
@@ -630,33 +2205,733 @@ with right:
         and (reviewer, case, selected_mask_file) in completed_reviews
     )
 
-    if already_reviewed:
-        st.warning("You have already reviewed this sample.")
-    allow_resubmit = False
+    # --------------------------------------------------
+    # Reviewed state
+    # --------------------------------------------------
 
-    if already_reviewed:
-        allow_resubmit = st.checkbox(
-            "I want to update/resubmit this review",
-            key=f"resubmit_{reviewer}_{case}_{selected_mask_file}"
+    if "edit_review" not in st.session_state:
+        st.session_state.edit_review = {}
+
+    sample_key = f"{reviewer}_{case}_{selected_mask_file}"
+    if "review_start_times" not in st.session_state:
+        st.session_state.review_start_times = {}
+
+    if sample_key not in st.session_state.review_start_times:
+        st.session_state.review_start_times[sample_key] = {
+            "started_at": datetime.now().isoformat(),
+            "start_time": time.time(),
+        }
+
+    if sample_key not in st.session_state.edit_review:
+        st.session_state.edit_review[sample_key] = False
+
+    edit_mode = st.session_state.edit_review[sample_key]
+
+    if already_reviewed and not edit_mode:
+
+        latest_review = get_latest_review(
+            reviewer,
+            case,
+            selected_mask_file
         )
-        
-    quality_score = st.radio(
-        "Do you agree with the provided description?",
-        ["Agree", "Disagree"],
-        horizontal=True
-    )
-    if quality_score == "Disagree":
+
+        if latest_review:
+
+            status = str(
+                latest_review.get("Status", "Reviewed")
+            ).strip()
+
+            rating = str(
+                latest_review.get("Quality", "")
+            ).strip()
+
+            submitted_at = str(
+                latest_review.get("Submitted At", "")
+            ).strip()
+
+            version = str(
+                latest_review.get("Version", "")
+            ).strip()
+
+            try:
+                review_date = datetime.fromisoformat(
+                    submitted_at
+                ).strftime("%d %b %Y, %H:%M")
+            except (ValueError, TypeError):
+                review_date = submitted_at
+
+            banner_text = f"✅ {status}"
+
+            if rating:
+                banner_text += f" · {rating}"
+
+            if review_date:
+                banner_text += f" · {review_date}"
+
+            if version:
+                banner_text += f" · Version {version}"
+
+            st.success(banner_text)
+
+        else:
+            st.info("✅ This sample has already been reviewed.")
+
+        if st.button(
+            "Edit review",
+            key=f"edit_review_button_{sample_key}"
+        ):
+            st.session_state.edit_review[sample_key] = True
+            st.rerun()
+
+        if st.button(
+            "Next unreviewed →",
+            key=f"next_unreviewed_{sample_key}"
+        ):
+            found_next = False
+
+            for next_case, next_mask in st.session_state.review_order:
+
+                if (
+                    reviewer,
+                    next_case,
+                    next_mask
+                ) not in completed_reviews:
+
+                    next_case_index = cases.index(next_case)
+
+                    next_case_dir = os.path.join(
+                        "data",
+                        next_case
+                    )
+
+                    next_case_masks = sorted([
+                        f for f in os.listdir(next_case_dir)
+                        if f.startswith("mask_")
+                        and f.lower().endswith(
+                            (".png", ".jpg", ".jpeg", ".bmp")
+                        )
+                    ])
+
+                    next_mask_index = next_case_masks.index(
+                        next_mask
+                    )
+
+                    st.session_state.case_index = next_case_index
+                    st.session_state.mask_index = next_mask_index
+
+                    found_next = True
+                    break
+
+            if found_next:
+                st.rerun()
+            else:
+                st.success(
+                    "✅ All samples have been reviewed."
+                )
+
+    elif already_reviewed and edit_mode:
         st.warning(
-            "Please correct the relevant instruction(s) above and optionally add feedback below."
+            "Editing this review will create a new version. "
+            "The previous review will be preserved."
         )
+
+    form_disabled = already_reviewed and not edit_mode
+        
+
+        # --------------------------------------------------
+    # Load saved draft
+    # --------------------------------------------------
+
+    draft_submission_type = (
+        "Autosave"
+        if tier == "Tier 1"
+        else "Autosave Tier 2"
+    )
+
+    draft = get_in_progress_draft(
+        reviewer,
+        case,
+        selected_mask_file,
+        draft_submission_type,
+    )
+
+    draft_loaded_key = (
+        f"draft_loaded_{tier}_{reviewer}_{case}_{selected_mask_file}"
+    )
+
+    # --------------------------------------------------
+    # Restore Tier 1/common draft
+    # --------------------------------------------------
+
+    if (
+        draft
+        and not st.session_state.get(draft_loaded_key, False)
+        and str(draft.get("Submission Type", "")).strip()
+        != "Autosave Tier 2"
+    ):
+
+        quality_key = f"quality_{case}_{selected_mask_file}"
+        issue_key = f"issue_tags_{case}_{selected_mask_file}"
+        correction_key = f"correction_{case}_{selected_mask_file}"
+        feedback_key = f"feedback_{case}_{selected_mask_file}"
+        skip_key = f"skip_{case}_{selected_mask_file}"
+        skip_reason_key = f"skip_reason_{case}_{selected_mask_file}"
+        skip_note_key = f"skip_note_{case}_{selected_mask_file}"
+        flag_key = f"flag_{case}_{selected_mask_file}"
+
+        quality = str(draft.get("Quality", "")).strip()
+
+        if quality:
+            st.session_state[quality_key] = quality
+
+        tags = str(draft.get("Issue Tags", "")).strip()
+
+        if tags:
+            st.session_state[issue_key] = [
+                tag for tag in tags.split("|") if tag
+            ]
+
+        st.session_state[correction_key] = str(
+            draft.get("Correction", "")
+        )
+
+        st.session_state[feedback_key] = str(
+            draft.get("Feedback", "")
+        )
+
+        skip_reason = str(
+            draft.get("Skip Reason", "")
+        ).strip()
+
+        st.session_state[skip_key] = bool(skip_reason)
+
+        if skip_reason:
+            st.session_state[skip_reason_key] = skip_reason
+
+        st.session_state[skip_note_key] = str(
+            draft.get("Skip Note", "")
+        )
+
+        st.session_state[flag_key] = (
+            str(draft.get("Flagged", "")).strip().lower()
+            == "yes"
+        )
+
+        st.session_state[draft_loaded_key] = True
+
+
+    # --------------------------------------------------
+    # Restore Tier 2 draft
+    # --------------------------------------------------
+
+    if (
+        draft
+        and not st.session_state.get(draft_loaded_key, False)
+        and str(draft.get("Submission Type", "")).strip()
+        == "Autosave Tier 2"
+    ):
+        try:
+            tier2_payload = json.loads(
+                str(draft.get("Feedback", "")).strip()
+            )
+
+            saved_dimensions = tier2_payload.get(
+                "dimensions",
+                {}
+            )
+
+            saved_grounding = tier2_payload.get(
+                "grounding"
+            )
+            saved_feedback = tier2_payload.get(
+                "feedback",
+                ""
+            )
+            saved_skip = tier2_payload.get(
+                "skip",
+                False
+            )
+
+            saved_skip_reason = tier2_payload.get(
+                "skip_reason"
+            )
+
+            saved_skip_note = tier2_payload.get(
+                "skip_note",
+                ""
+            )
+
+            saved_flagged = tier2_payload.get(
+                "flagged",
+                False
+            )
+
+            for dim_key, dim_state in saved_dimensions.items():
+
+                rating_key = (
+                    f"{dim_key}_rating_"
+                    f"{case}_{selected_mask_file}"
+                )
+
+                tags_key = (
+                    f"{dim_key}_tags_"
+                    f"{case}_{selected_mask_file}"
+                )
+
+                correction_key = (
+                    f"{dim_key}_correction_"
+                    f"{case}_{selected_mask_file}"
+                )
+
+                if dim_state.get("rating") is not None:
+                    st.session_state[rating_key] = (
+                        dim_state["rating"]
+                    )
+
+                if rating_key not in st.session_state:
+                    st.session_state[rating_key] = (
+                        st.session_state.review_state.get(
+                            rating_key,
+                            dim_state.get("rating")
+                        )
+                    )
+
+                if tags_key not in st.session_state:
+                    st.session_state[tags_key] = (
+                        st.session_state.review_state.get(
+                            tags_key,
+                            dim_state.get("tags", [])
+                        )
+                    )
+
+                if correction_key not in st.session_state:
+                    st.session_state[correction_key] = (
+                        st.session_state.review_state.get(
+                            correction_key,
+                            dim_state.get("correction", "")
+                        )
+                    )
+
+            if saved_grounding is not None:
+                st.session_state[
+                    f"grounding_{case}_{selected_mask_file}"
+                ] = saved_grounding
+
+            feedback_key = f"feedback_{case}_{selected_mask_file}"
+
+            st.session_state[feedback_key] = saved_feedback
+
+
+            skip_key = f"skip_{case}_{selected_mask_file}"
+            skip_reason_key = f"skip_reason_{case}_{selected_mask_file}"
+            skip_note_key = f"skip_note_{case}_{selected_mask_file}"
+            flag_key = f"flag_{case}_{selected_mask_file}"
+
+            if skip_key not in st.session_state:
+                st.session_state[skip_key] = saved_skip
+
+            if skip_reason_key not in st.session_state:
+                st.session_state[skip_reason_key] = saved_skip_reason
+
+            if skip_note_key not in st.session_state:
+                st.session_state[skip_note_key] = saved_skip_note
+
+            if flag_key not in st.session_state:
+                st.session_state[flag_key] = saved_flagged
+
+            st.session_state[draft_loaded_key] = True
+
+        except (json.JSONDecodeError, TypeError):
+            pass
+
+
+    if draft:
+        st.caption("Draft restored from autosave.")
+
+
+    # ==================================================
+    # TIER 1
+    # ==================================================
+
+    if tier == "Tier 1":
+
+        st.markdown("### Description")
+
+        st.markdown(
+            f"""
+<div style="padding:14px; border:1px solid #d9d9d9;
+border-radius:10px; background:#fafafa; line-height:1.6;">
+{full_description}
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+        st.markdown("### Review checklist")
+
+        st.markdown("""
+        - Clarity & correctness of text
+        - Accuracy of described morphology
+        - Do instructions reflect intended reasoning dimension?
+        - Any correction or notes to add
+        """)
+
+        quality_key = f"quality_{case}_{selected_mask_file}"
+
+        
+
+        quality_score_raw = st.radio(
+            "Is this description clinically accurate for the highlighted region?",
+            [
+                "1 — Accurate",
+                "2 — Minor issues",
+                "3 — Major issues",
+            ],
+            index=None,
+            horizontal=True,
+            key=quality_key,
+            disabled=form_disabled,
+            on_change=autosave_current_sample,
+            args=(reviewer, case, selected_mask_file),
+        )
+
+        RATING_MAP = {
+            "1 — Accurate": "Accurate",
+            "2 — Minor issues": "Minor issues",
+            "3 — Major issues": "Major issues",
+        }
+
+        quality_score = (
+            RATING_MAP.get(quality_score_raw, quality_score_raw)
+            if quality_score_raw is not None
+            else None
+        )
+
+        ISSUE_TAGS = [
+            "Terminology",
+            "Location",
+            "Morphology",
+            "Wrong structure",
+            "Too vague",
+            "Other",
+        ]
+
+        issue_tags = []
+        correction = ""
+
+        if quality_score in ["Minor issues", "Major issues"]:
+
+            issue_tags = st.multiselect(
+                "What is the issue?",
+                ISSUE_TAGS,
+                key=f"issue_tags_{case}_{selected_mask_file}",
+                disabled=form_disabled,
+                on_change=autosave_current_sample,
+                args=(reviewer, case, selected_mask_file)
+            )
+
+            correction_key = f"correction_{case}_{selected_mask_file}"
+
+            st.text_area(
+                "Optional correction",
+                key=correction_key,
+                placeholder="Enter a corrected description if needed",
+                height=100,
+                disabled=form_disabled,
+                on_change=autosave_current_sample,
+                args=(reviewer, case, selected_mask_file),
+            )
+
+            correction = st.session_state.get(correction_key, "")
+
+        # These are Tier 2-only variables
+        dimensions = {}
+        dimension_ratings = {}
+        dimension_tags = {}
+        dimension_corrections = {}
+        grounding = None
+
+
+    # ==================================================
+    # TIER 2
+    # ==================================================
+
+    else:
+
+        dimensions = extract_dimensions(case_info)
+
+        DIMENSION_LABELS = {
+            "histological": "Histological Reasoning",
+            "spatial": "Spatial Reasoning",
+            "hierarchical": "Hierarchical Reasoning",
+            "disambiguating": "Disambiguating Reasoning",
+        }
+
+        ISSUE_TAGS = [
+            "Terminology",
+            "Location",
+            "Morphology",
+            "Wrong structure",
+            "Too vague",
+            "Other",
+        ]
+
+        dimension_ratings = {}
+        dimension_tags = {}
+        dimension_corrections = {}
+
+        # --------------------------------------------------
+        # Tier 2 keyboard shortcuts
+        # 1/2/3 apply to the first unrated dimension
+        # --------------------------------------------------
+
+        
+
+        for dim_key, dim_text in dimensions.items():
+
+            rating_key = (
+                f"{dim_key}_rating_{case}_{selected_mask_file}"
+            )
+
+            # Recover current rating before rendering the card
+            current_rating = st.session_state.get(
+                rating_key,
+                st.session_state.review_state.get(rating_key)
+            )
+
+            issue_state = current_rating in [
+                "2 — Minor issues",
+                "3 — Major issues",
+                "Minor issues",
+                "Major issues",
+            ]
+
+            if issue_state:
+                card_background = "#fff8e1"
+                card_border = "#f0ad4e"
+                border_width = "2px"
+            else:
+                card_background = "#fafafa"
+                card_border = "#d9d9d9"
+                border_width = "1px"
+
+            st.markdown(
+                f"""<div style="
+            padding:14px;
+            border:{border_width} solid {card_border};
+            border-radius:10px;
+            margin-bottom:8px;
+            background:{card_background};
+            line-height:1.6;
+            white-space:normal;
+            overflow-wrap:anywhere;
+            ">
+            <div style="
+            font-weight:700;
+            font-size:18px;
+            margin-bottom:8px;
+            ">
+            {DIMENSION_LABELS[dim_key]}
+            </div>
+            {dim_text}
+            </div>""",
+                unsafe_allow_html=True
+            )
+
+            rating = st.radio(
+                f"{DIMENSION_LABELS[dim_key]} accuracy",
+                [
+                    "1 — Accurate",
+                    "2 — Minor issues",
+                    "3 — Major issues",
+                ],
+                index=None,
+                horizontal=True,
+                key=rating_key,
+                disabled=form_disabled,
+                on_change=autosave_tier2_sample,
+                args=(
+                    reviewer,
+                    case,
+                    selected_mask_file,
+                    dimensions,
+                )
+            )
+
+            RATING_MAP = {
+                "1 — Accurate": "Accurate",
+                "2 — Minor issues": "Minor issues",
+                "3 — Major issues": "Major issues",
+            }
+
+            rating_value = (
+                RATING_MAP.get(rating, rating)
+                if rating is not None
+                else None
+            )
+
+            dimension_ratings[dim_key] = rating_value
+
+            tags = []
+            correction_text = ""
+
+            if rating_value in [
+                "Minor issues",
+                "Major issues"
+            ]:
+
+                with st.container(border=True):
+
+                    st.markdown(
+                        """
+                        <div style="
+                            background:#fff3cd;
+                            border-left:5px solid #f0ad4e;
+                            padding:8px 12px;
+                            border-radius:6px;
+                            margin-bottom:10px;
+                        ">
+                            <strong>Issue details</strong>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+
+                    tags = st.multiselect(
+                        "What is the issue?",
+                        ISSUE_TAGS,
+                        key=f"{dim_key}_tags_{case}_{selected_mask_file}",
+                        disabled=form_disabled,
+                        on_change=autosave_tier2_sample,
+                        args=(
+                            reviewer,
+                            case,
+                            selected_mask_file,
+                            dimensions,
+                        )
+                    )
+
+                    correction_key = (
+                        f"{dim_key}_correction_{case}_{selected_mask_file}"
+                    )
+
+                    widget_correction_key = (
+                        f"_tier2_widget_{dim_key}_correction_"
+                        f"{case}_{selected_mask_file}"
+                    )
+
+                    # Restore the permanent value into the temporary widget
+                    if widget_correction_key not in st.session_state:
+                        st.session_state[widget_correction_key] = (
+                            st.session_state.get(
+                                correction_key,
+                                st.session_state.review_state.get(
+                                    correction_key,
+                                    ""
+                                )
+                            )
+                        )
+
+                    st.text_input(
+                        "Optional correction",
+                        key=widget_correction_key,
+                        disabled=form_disabled,
+                        on_change=save_tier2_correction,
+                        args=(
+                            reviewer,
+                            case,
+                            selected_mask_file,
+                            dimensions,
+                            dim_key,
+                        )
+                    )
+
+                    correction_text = st.session_state.get(
+                        correction_key,
+                        st.session_state.get(widget_correction_key, "")
+                    )
+
+            dimension_tags[dim_key] = tags
+            dimension_corrections[dim_key] = correction_text
+
+
+        st.markdown("### Overall grounding")
+
+        grounding = st.radio(
+            "Does the description as a whole point to the highlighted region?",
+            ["Yes", "Partially", "No"],
+            index=None,
+            horizontal=True,
+            key=f"grounding_{case}_{selected_mask_file}",
+            disabled=form_disabled,
+            on_change=autosave_tier2_sample,
+            args=(
+                reviewer,
+                case,
+                selected_mask_file,
+                dimensions,
+            )
+        )
+
+        # Derive Tier 2 overall quality from the worst result
+        severity = {
+            "Accurate": 0,
+            "Minor issues": 1,
+            "Major issues": 2,
+        }
+
+        grounding_severity = {
+            "Yes": 0,
+            "Partially": 1,
+            "No": 2,
+        }
+
+        scores = [
+            severity[rating]
+            for rating in dimension_ratings.values()
+            if rating in severity
+        ]
+
+        if grounding in grounding_severity:
+            scores.append(grounding_severity[grounding])
+
+        if scores:
+            worst_score = max(scores)
+
+            quality_score = {
+                0: "Accurate",
+                1: "Minor issues",
+                2: "Major issues",
+            }[worst_score]
+        else:
+            quality_score = None
+
+        issue_tags = []
+        correction = ""
+
+
+
+    feedback_key = f"feedback_{case}_{selected_mask_file}"
+
+    if not form_disabled:
+        rating_keyboard_shortcuts(
+            f"shortcuts_{tier}_{case}_{selected_mask_file}"
+        )
+
     feedback = st.text_area(
         "Text feedback",
         height=150,
-        key=f"feedback_{case}_{selected_mask_file}",
-        on_change=mark_unsaved
+        key=feedback_key,
+        disabled=form_disabled,
+        on_change=autosave_shared_feedback,
+        args=(
+            reviewer,
+            case,
+            selected_mask_file,
+            tier,
+            dimensions,
+        ),
     )
-    ## voice feedback
-    st.markdown("### Voice Feedback")
 
     audio_bytes = audio_recorder(
         text="Click to record, then click to save the voicenote",
@@ -664,32 +2939,298 @@ with right:
         neutral_color="#6aa36f",
         icon_name="microphone",
         icon_size="2x",
+        key=f"audio_{case}_{selected_mask_file}",
     )
-    # original_instructions = "\n\n".join(original_sections)
-    # edited_instructions = "\n\n".join(edited_sections)
 
-    # has_unsaved_changes = (
-    #     edited_instructions != original_instructions
-    #     or feedback.strip() != ""
-    #     or audio_bytes is not None
-    # )
-    # if has_unsaved_changes:
-    #     st.sidebar.warning(
-    #         "You have unsaved changes. Submit before moving to another sample."
-    #     )
 
-    submit_disabled = already_reviewed and not allow_resubmit
+    submit_disabled = already_reviewed and not edit_mode
+
+    skip_sample = st.checkbox(
+        "Skip this sample",
+        key=f"skip_{case}_{selected_mask_file}",
+        disabled=form_disabled,
+        on_change=autosave_shared_controls,
+        args=(
+            reviewer,
+            case,
+            selected_mask_file,
+            tier,
+            dimensions,
+        )
+    )
+
+    skip_reason = None
+    skip_note = ""
+
+    if skip_sample:
+        skip_reason = st.selectbox(
+            "Reason for skipping",
+            [
+                "Image quality too poor",
+                "Mask wrong or ambiguous",
+                "Outside expertise",
+                "Other",
+            ],
+            index=None,
+            placeholder="Select a reason",
+            key=f"skip_reason_{case}_{selected_mask_file}",
+            disabled=form_disabled,
+            on_change=autosave_shared_controls,
+            args=(
+                reviewer,
+                case,
+                selected_mask_file,
+                tier,
+                dimensions,
+            ),
+        )
+
+        skip_note = st.text_input(
+            "Optional skip note",
+            key=f"skip_note_{case}_{selected_mask_file}",
+            disabled=form_disabled,
+            on_change=autosave_shared_controls,
+            args=(
+                reviewer,
+                case,
+                selected_mask_file,
+                tier,
+                dimensions,
+            ),
+        )
+
+    
+
+    flagged = st.checkbox(
+        "🚩 Flag for discussion",
+        key=f"flag_{case}_{selected_mask_file}",
+        disabled=form_disabled,
+        on_change=autosave_shared_controls,
+        args=(
+            reviewer,
+            case,
+            selected_mask_file,
+            tier,
+            dimensions,
+        )
+    )
 
     if st.button(
-        "Submit feedback",
-        disabled=submit_disabled
+        "Save and next",
+        disabled=submit_disabled,
+        type="primary",
     ):
         try:
+            # -------------------------
+            # Reviewer validation
+            # -------------------------
             if reviewer is None:
                 st.error("Please select a reviewer before submitting.")
                 st.stop()
 
+            # -------------------------
+            # Skip / rating validation
+            # -------------------------
+            if skip_sample:
+                if skip_reason is None:
+                    st.error("Please select a reason for skipping.")
+                    st.stop()
+
+            else:
+
+                # ==================================================
+                # Tier 1 validation
+                # ==================================================
+
+                if tier == "Tier 1":
+
+                    if quality_score is None:
+                        st.error(
+                            "Please select a rating before submitting."
+                        )
+                        st.stop()
+
+                    if (
+                        quality_score == "Major issues"
+                        and not issue_tags
+                    ):
+                        st.error(
+                            "Please select at least one issue tag "
+                            "for Major issues."
+                        )
+                        st.stop()
+
+
+                # ==================================================
+                # Tier 2 validation
+                # Validate Tier 2 if:
+                #   1. reviewer is currently in Tier 2, OR
+                #   2. reviewer entered any Tier 2 data previously
+                # ==================================================
+
+                validation_dimensions = extract_dimensions(case_info)
+
+                validation_rating_map = {
+                    "1 — Accurate": "Accurate",
+                    "2 — Minor issues": "Minor issues",
+                    "3 — Major issues": "Major issues",
+                }
+
+                validation_labels = {
+                    "histological": "Histological Reasoning",
+                    "spatial": "Spatial Reasoning",
+                    "hierarchical": "Hierarchical Reasoning",
+                    "disambiguating": "Disambiguating Reasoning",
+                }
+
+                tier2_validation_data = {}
+
+                for dim_key in validation_dimensions.keys():
+
+                    rating_key = (
+                        f"{dim_key}_rating_"
+                        f"{case}_{selected_mask_file}"
+                    )
+
+                    tags_key = (
+                        f"{dim_key}_tags_"
+                        f"{case}_{selected_mask_file}"
+                    )
+
+                    correction_key = (
+                        f"{dim_key}_correction_"
+                        f"{case}_{selected_mask_file}"
+                    )
+
+                    rating_raw = st.session_state.get(
+                        rating_key,
+                        st.session_state.review_state.get(rating_key)
+                    )
+
+                    rating_value = (
+                        validation_rating_map.get(
+                            rating_raw,
+                            rating_raw
+                        )
+                        if rating_raw is not None
+                        else None
+                    )
+
+                    tags_value = st.session_state.get(
+                        tags_key,
+                        st.session_state.review_state.get(
+                            tags_key,
+                            []
+                        )
+                    )
+
+                    correction_value = str(
+                        st.session_state.get(
+                            correction_key,
+                            st.session_state.review_state.get(
+                                correction_key,
+                                ""
+                            )
+                        )
+                    ).strip()
+
+                    tier2_validation_data[dim_key] = {
+                        "rating": rating_value,
+                        "tags": tags_value,
+                        "correction": correction_value,
+                    }
+
+
+                grounding_key = (
+                    f"grounding_{case}_{selected_mask_file}"
+                )
+
+                grounding_value = st.session_state.get(
+                    grounding_key,
+                    st.session_state.review_state.get(
+                        grounding_key
+                    )
+                )
+
+
+                # Has the reviewer started Tier 2 at all?
+                has_tier2_input = (
+                    grounding_value is not None
+                    or any(
+                        data["rating"] is not None
+                        or bool(data["tags"])
+                        or bool(data["correction"])
+                        for data in tier2_validation_data.values()
+                    )
+                )
+
+
+                # Validate when currently using Tier 2,
+                # OR when Tier 2 was previously started
+                if tier == "Tier 2" or has_tier2_input:
+
+                    missing_dimensions = [
+                        dim_key
+                        for dim_key, data
+                        in tier2_validation_data.items()
+                        if data["rating"] is None
+                    ]
+
+                    if missing_dimensions:
+
+                        missing_names = [
+                            validation_labels.get(
+                                dim_key,
+                                dim_key
+                            )
+                            for dim_key in missing_dimensions
+                        ]
+
+                        st.error(
+                            "Please rate every Tier 2 reasoning "
+                            "dimension before submitting. Missing: "
+                            + ", ".join(missing_names)
+                        )
+
+                        st.stop()
+
+
+                    for dim_key, data in tier2_validation_data.items():
+
+                        if (
+                            data["rating"] == "Major issues"
+                            and not data["tags"]
+                        ):
+
+                            st.error(
+                                "Please select at least one issue tag "
+                                f"for {validation_labels.get(dim_key, dim_key)}."
+                            )
+
+                            st.stop()
+
+
+                    if grounding_value is None:
+
+                        st.error(
+                            "Please answer the Tier 2 overall "
+                            "grounding question before submitting."
+                        )
+
+                        st.stop()
+
+            # -------------------------
+            # Upload voice note
+            # -------------------------
             sheet = connect_to_sheet()
+
+            # Determine review version before uploading audio
+            review_version = get_review_version(
+                reviewer,
+                case,
+                selected_mask_file
+            )
+
             audio_link = ""
 
             if audio_bytes:
@@ -697,97 +3238,478 @@ with right:
                     audio_bytes,
                     case,
                     selected_mask_file,
-                    reviewer
+                    reviewer,
+                    review_version
                 )
 
-            original_instructions = "\n\n".join(original_sections)
-            edited_instructions = "\n\n".join(edited_sections)            
+            # Tier 1 description is read-only
+            original_instructions = full_description
+            edited_instructions = full_description
 
-            submission_type = "Revision" if already_reviewed else "Initial"
+            submission_type = (
+                "Revision" if already_reviewed else "Initial"
+            )
+            started_at = st.session_state.review_start_times[sample_key]["started_at"]
+            submitted_at = datetime.now().isoformat()
 
+            active_seconds = int(
+                time.time()
+                - st.session_state.review_start_times[sample_key]["start_time"]
+            )
+            # -------------------------
+            # Final Tier 2 data
+            # -------------------------
+
+            # Always recover Tier 2 dimensions from the case,
+            # regardless of which tier is currently being viewed
+            all_dimensions = extract_dimensions(case_info)
+
+            ALL_DIMENSION_KEYS = [
+                "histological",
+                "spatial",
+                "hierarchical",
+                "disambiguating",
+            ]
+
+            tier2_final_dimensions = {}
+
+            for dim_key in ALL_DIMENSION_KEYS:
+                rating_key = f"{dim_key}_rating_{case}_{selected_mask_file}"
+                tags_key = f"{dim_key}_tags_{case}_{selected_mask_file}"
+                correction_key = f"{dim_key}_correction_{case}_{selected_mask_file}"
+
+                rating_raw = st.session_state.get(
+                    rating_key,
+                    st.session_state.review_state.get(rating_key)
+                )
+
+                rating_map = {
+                    "1 — Accurate": "Accurate",
+                    "2 — Minor issues": "Minor issues",
+                    "3 — Major issues": "Major issues",
+                }
+
+                rating_final = (
+                    rating_map.get(rating_raw)
+                    if rating_raw is not None
+                    else None
+                )
+
+                tags_final = st.session_state.get(
+                    tags_key,
+                    st.session_state.review_state.get(tags_key, [])
+                )
+
+                correction_final_dim = str(
+                    st.session_state.get(
+                        correction_key,
+                        st.session_state.review_state.get(
+                            correction_key,
+                            ""
+                        )
+                    )
+                ).strip()
+
+                is_shown = dim_key in all_dimensions
+
+                tier2_final_dimensions[dim_key] = {
+                    "shown": is_shown,
+                    "rating": rating_final if is_shown else None,
+                    "tags": tags_final if is_shown else [],
+                    "correction": correction_final_dim if is_shown else "",
+                }
+
+
+            grounding_key = f"grounding_{case}_{selected_mask_file}"
+
+            grounding_final = st.session_state.get(
+                grounding_key,
+                st.session_state.review_state.get(grounding_key)
+            )
+
+            has_tier2_data = (
+                grounding_final is not None
+                or any(
+                    dim_data["shown"]
+                    and (
+                        dim_data["rating"] is not None
+                        or dim_data["tags"]
+                        or dim_data["correction"]
+                    )
+                    for dim_data in tier2_final_dimensions.values()
+                )
+            )
+
+            if has_tier2_data:
+                tier2_final_data = {
+                    "dimensions": tier2_final_dimensions,
+                    "grounding": grounding_final,
+                }
+
+                tier2_json = json.dumps(tier2_final_data)
+            else:
+                tier2_json = ""
+
+
+            # -------------------------
+            # Final feedback
+            # -------------------------
+
+            feedback_final = str(
+                st.session_state.get(
+                    f"feedback_{case}_{selected_mask_file}",
+                    ""
+                )
+            ).strip()
+
+            # Preserve the reviewer's actual free-text feedback
+            free_text_final = feedback_final
+
+
+            # -------------------------
+            # Append Tier 2 corrections to feedback
+            # -------------------------
+
+            tier2_correction_lines = []
+
+            DIMENSION_LABELS = {
+                "histological": "Histological",
+                "spatial": "Spatial",
+                "hierarchical": "Hierarchical",
+                "disambiguating": "Disambiguating",
+            }
+
+            for dim_key, dim_data in tier2_final_dimensions.items():
+
+                correction_text = dim_data.get("correction", "").strip()
+
+                if correction_text:
+                    tier2_correction_lines.append(
+                        f"{DIMENSION_LABELS.get(dim_key, dim_key)} correction: "
+                        f"{correction_text}"
+                    )
+
+            if tier2_correction_lines:
+
+                tier2_feedback = "\n".join(tier2_correction_lines)
+
+                if feedback_final:
+                    feedback_final += "\n\n" + tier2_feedback
+                else:
+                    feedback_final = tier2_feedback
+
+
+            # -------------------------
+            # Final Tier 1 correction
+            # -------------------------
+
+            correction_final = str(
+                st.session_state.get(
+                    f"correction_{case}_{selected_mask_file}",
+                    ""
+                )
+            ).strip()
+
+
+            # -------------------------
+            # Saving resuts in a JSON file 
+            # -------------------------
+            # -------------------------
+            # Structured JSON record
+            # -------------------------
+
+            record_id = str(uuid.uuid4())
+
+            sample_mask_name = os.path.splitext(
+                selected_mask_file
+            )[0]
+
+            sample_id = f"{case}_{sample_mask_name}"
+
+            reviewer_id = (
+                reviewer.strip()
+                .lower()
+                .replace(" ", "_")
+            )
+
+            organ = extract_organ(case_info).lower()
+
+
+            # Dataset, if explicitly present in metadata
+            dataset_name = None
+
+            for line in case_info.splitlines():
+                clean = line.strip()
+
+                if clean.lower().startswith("- dataset"):
+                    dataset_name = clean.split(":", 1)[1].strip()
+                    break
+
+
+            RATING_JSON_MAP = {
+                "1 — Accurate": "accurate",
+                "2 — Minor issues": "minor",
+                "3 — Major issues": "major",
+                "Accurate": "accurate",
+                "Minor issues": "minor",
+                "Major issues": "major",
+            }
+
+            TAG_JSON_MAP = {
+                "Terminology": "terminology",
+                "Location": "location",
+                "Morphology": "morphology",
+                "Wrong structure": "wrong_structure",
+                "Too vague": "too_vague",
+                "Other": "other",
+            }
+
+            SKIP_REASON_MAP = {
+                "Image quality too poor": "image_quality",
+                "Mask wrong or ambiguous": "mask_wrong",
+                "Outside expertise": "outside_expertise",
+                "Other": "other",
+            }
+
+
+            # Tier 1 state
+            tier1_rating_raw = st.session_state.get(
+                f"quality_{case}_{selected_mask_file}",
+                st.session_state.review_state.get(
+                    f"quality_{case}_{selected_mask_file}"
+                )
+            )
+
+            tier1_tags = st.session_state.get(
+                f"issue_tags_{case}_{selected_mask_file}",
+                st.session_state.review_state.get(
+                    f"issue_tags_{case}_{selected_mask_file}",
+                    []
+                )
+            )
+
+
+            # Convert Tier 2 data to final schema
+            json_dimensions = {}
+
+            for dim_key, dim_data in tier2_final_dimensions.items():
+
+                json_dimensions[dim_key] = {
+                    "shown": dim_data["shown"],
+                    "rating": RATING_JSON_MAP.get(
+                        dim_data["rating"]
+                    ),
+                    "issue_tags": [
+                        TAG_JSON_MAP.get(tag, tag)
+                        for tag in dim_data["tags"]
+                    ],
+                    "correction": (
+                        dim_data["correction"] or None
+                    ),
+                }
+
+            if tier == "Tier 1":
+
+                json_overall = {
+                    "rating": RATING_JSON_MAP.get(tier1_rating_raw),
+                    "issue_tags": [
+                        TAG_JSON_MAP.get(tag, tag)
+                        for tag in (tier1_tags or [])
+                    ],
+                    "correction": correction_final or None,
+                }
+
+                # Keep only which dimensions were shown.
+                # Tier 1 has no per-dimension ratings.
+                json_dimensions = {
+                    dim_key: {
+                        "shown": dim_data["shown"],
+                        "rating": None,
+                        "issue_tags": [],
+                        "correction": None,
+                    }
+                    for dim_key, dim_data in tier2_final_dimensions.items()
+                }
+
+                json_grounding = None
+
+            else:
+
+                json_overall = {
+                    "rating": None,
+                    "issue_tags": [],
+                    "correction": None,
+                }
+
+                json_grounding = (
+                    grounding_final.lower()
+                    if grounding_final
+                    else None
+                )
+
+            review_record = {
+
+                "record_id": record_id,
+                "sample_id": sample_id,
+                "dataset": dataset_name,
+                "organ": organ,
+
+                "groundtruth": {
+                    "cancer_type": cancer_type,
+                    "grade_or_class": grade,
+                },
+
+                "reviewer_id": reviewer_id,
+
+                "tier": 1 if tier == "Tier 1" else 2,
+                "version": review_version,
+
+                "status": (
+                    "skipped"
+                    if skip_sample
+                    else "reviewed"
+                ),
+
+                "overall": json_overall,
+
+                "dimensions": json_dimensions,
+
+                "grounding": json_grounding,
+
+                "flagged": bool(flagged),
+
+                "skip_reason": (
+                    SKIP_REASON_MAP.get(skip_reason)
+                    if skip_sample
+                    else None
+                ),
+
+                "skip_note": (
+                    skip_note or None
+                    if skip_sample
+                    else None
+                ),
+
+                "voice_note_path": audio_link or None,
+
+                "free_text": free_text_final or None,
+
+                "started_at": started_at,
+                "submitted_at": submitted_at,
+                "active_seconds": active_seconds,
+
+                "session_id": st.session_state.session_id,
+                "app_version": APP_VERSION,
+            }
+
+
+            review_json_path = upload_review_json_to_gcs(
+                review_record
+            )
+
+            # -------------------------
+            # Save
+            # -------------------------
             sheet.append_row([
                 datetime.now().isoformat(),
                 reviewer,
                 case,
                 selected_mask_file,
-                quality_score,
-                feedback,
+                quality_score if not skip_sample else "",
+
+                feedback_final,                  # Feedback column
+
                 "Yes" if audio_bytes else "No",
                 audio_link,
                 original_instructions,
                 edited_instructions,
-                submission_type
+                submission_type,
+                "|".join(issue_tags) if not skip_sample else "",
+
+                correction_final if not skip_sample else "",   # Correction column
+
+                "Skipped" if skip_sample else "Reviewed",
+                skip_reason if skip_sample else "",
+                skip_note if skip_sample else "",
+                "Yes" if flagged else "No",
+                review_version,
+                started_at,
+                submitted_at,
+                active_seconds,
+                st.session_state.session_id,
+                APP_VERSION,
+                tier,
+                tier2_json
             ])
+            delete_in_progress_draft(
+                reviewer,
+                case,
+                selected_mask_file
+            )
+            st.session_state.edit_review[sample_key] = False
 
             st.session_state.unsaved_changes = False
+            st.session_state.review_start_times.pop(sample_key, None)
+            get_review_version.clear()
+            get_latest_review.clear()
+            
 
-            st.success("Feedback submitted successfully.")
+            if skip_sample:
+                st.success("Sample skipped successfully.")
+            else:
+                st.success("Feedback submitted successfully.")
 
             get_completed_reviews.clear()
             completed_reviews = get_completed_reviews()
 
-            # 1. Look for next unreviewed mask in current case
-            next_mask_index = None
+       
 
-            for i in range(st.session_state.mask_index + 1, len(mask_files)):
-                candidate_mask = mask_files[i]
+            # --------------------------------------------------
+            # Move to next unreviewed sample in randomized order
+            # --------------------------------------------------
 
-                if (reviewer, case, candidate_mask) not in completed_reviews:
-                    next_mask_index = i
-                    break
+            found_next = False
 
-            if next_mask_index is not None:
-                st.session_state.mask_index = next_mask_index
-                st.rerun()
+            for next_case, next_mask in st.session_state.review_order:
 
-            # 2. Move to next case with an unreviewed mask
-            for next_case_index in range(
-                st.session_state.case_index + 1,
-                len(cases)
-            ):
-                next_case = cases[next_case_index]
-                next_case_dir = os.path.join("data", next_case)
+                if (
+                    reviewer,
+                    next_case,
+                    next_mask
+                ) not in completed_reviews:
 
-                next_case_masks = sorted([
-                    f for f in os.listdir(next_case_dir)
-                    if f.startswith("mask_")
-                    and f.lower().endswith(
-                        (".png", ".jpg", ".jpeg", ".bmp")
+                    next_case_index = cases.index(next_case)
+
+                    next_case_dir = os.path.join(
+                        "data",
+                        next_case
                     )
-                ])
 
-                for mask_index, mask_file in enumerate(next_case_masks):
-                    if (
-                        reviewer,
-                        next_case,
-                        mask_file
-                    ) not in completed_reviews:
+                    next_case_masks = sorted([
+                        f for f in os.listdir(next_case_dir)
+                        if f.startswith("mask_")
+                        and f.lower().endswith(
+                            (".png", ".jpg", ".jpeg", ".bmp")
+                        )
+                    ])
 
-                        st.session_state.case_index = next_case_index
-                        st.session_state.mask_index = mask_index
-                        st.rerun()
+                    next_mask_index = next_case_masks.index(
+                        next_mask
+                    )
 
-            all_reviewed = True
+                    st.session_state.case_index = next_case_index
+                    st.session_state.mask_index = next_mask_index
 
-            for case_name in cases:
-                case_dir = os.path.join("data", case_name)
-
-                case_masks = sorted([
-                    f for f in os.listdir(case_dir)
-                    if f.startswith("mask_")
-                    and f.lower().endswith((".png", ".jpg", ".jpeg", ".bmp"))
-                ])
-
-                for mask_file in case_masks:
-                    if (reviewer, case_name, mask_file) not in completed_reviews:
-                        all_reviewed = False
-                        break
-
-                if not all_reviewed:
+                    found_next = True
                     break
 
-            if all_reviewed:
-                st.success("✅ All samples have been reviewed. Thank you!")
+            if found_next:
+                st.rerun()
+            else:
+                st.success(
+                    "✅ All samples have been reviewed. Thank you!"
+                )
+                
 
             
 
@@ -796,4 +3718,3 @@ with right:
                 "Submission failed. The app will remain on the current sample."
             )
             st.exception(e)
-        
