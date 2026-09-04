@@ -55,7 +55,7 @@ with title_col:
     st.markdown(
         """
         <h1 style="text-align: center; margin-top: 20px;">
-            ReferralSeg Dataset Viewer
+            ReferralSeg Annotation Tool
         </h1>
         """,
         unsafe_allow_html=True
