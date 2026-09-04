@@ -24,14 +24,27 @@ from google.api_core.exceptions import NotFound
 APP_VERSION = "2.0.0"
 
 st.set_page_config(layout="wide")
-# hotkeys.activate(
-#     [
-#         hotkeys.hk("rating_1", code="Digit1"),
-#         hotkeys.hk("rating_2", code="Digit2"),
-#         hotkeys.hk("rating_3", code="Digit3"),
-#     ],
-#     key="rating_hotkeys",
-# )
+st.markdown(
+    """
+    <style>
+    div.stButton > button,
+    div.stDownloadButton > button {
+        height: auto !important;
+        min-height: 2.6rem;
+    }
+
+    div.stButton > button p,
+    div.stDownloadButton > button p {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        line-height: 1.2 !important;
+        text-align: center;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
 
 left_logo, title_col, right_logo = st.columns([1.5, 5, 1.5])
 
