@@ -3964,7 +3964,7 @@ with right:
 
         with action_skip:
             if st.button(
-                "Skip / not assessable",
+                "Skip /\n not assessable",
                 key=f"open_skip_{case}_{selected_mask_file}",
                 disabled=form_disabled,
                 use_container_width=True,
