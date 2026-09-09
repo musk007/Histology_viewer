@@ -15,6 +15,7 @@ import uuid
 import json
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor
+import re
 
 
 
@@ -193,7 +194,10 @@ cases = sorted(
         d for d in os.listdir("data")
         if os.path.isdir(os.path.join("data", d))
     ],
-    key=lambda x: int(x)
+    key=lambda x: [
+        int(part) if part.isdigit() else part.lower()
+        for part in re.split(r"(\d+)", x)
+    ]
 )
 
 
