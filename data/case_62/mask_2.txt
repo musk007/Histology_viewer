@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrous connective tissue immediately subjacent to and between the crowded atypical epithelial linings of thickened alveolar walls.
+
+##### Spatial Reasoning
+Select stromal bands that track along and between the densely cellular tumor-lined alveolar structures, avoiding the open alveolar airspaces.
+
+##### Ambiguity Reasoning
+Isolate fibrous stroma lacking cohesive epithelial nuclei, distinguishing it from the adjacent dark purple tumor cell layers and empty alveolar spaces.

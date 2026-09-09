@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the inferior-right irregular gland cross-section with markedly stratified hyperchromatic epithelium, narrow slit-like lumen, and central eosinophilic necrotic-appearing debris, lacking abundant goblet mucin.
+
+##### Spatial Reasoning
+Select the solitary distorted gland located along the inferior-right image border, separated from larger tubular glands by intervening desmoplastic stroma.
+
+##### Hierarchical Reasoning
+Isolate the smallest, most compressed glandular structure in this field, showing the greatest luminal obliteration and epithelial crowding.

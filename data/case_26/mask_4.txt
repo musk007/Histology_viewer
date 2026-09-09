@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the centrally located irregular round crypt with a single open oval lumen, moderately crowded epithelium, reduced goblet mucin, and partial nuclear stratification.
+
+##### Spatial Reasoning
+Select the crypt in the central field, lying between more elongated glands above and below within surrounding fibrous stroma.
+
+Hierarchical Reasoning
+Isolate the moderately sized, most rounded crypt among adjacent more elongated, similarly dysplastic glands.

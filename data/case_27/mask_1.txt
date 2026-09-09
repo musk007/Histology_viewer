@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the superior-left elongated tubular gland with irregular but still discernible lumen, stratified hyperchromatic nuclei, and reduced goblet mucin compared with benign-appearing crypts.
+
+##### Spatial Reasoning
+Select the broad tubular gland complex occupying the upper-left corner, extending vertically along the image edge.
+
+##### Hierarchical Reasoning
+Isolate the largest contiguous neoplastic tubular structure in the field, spanning more vertical height than adjacent glands.

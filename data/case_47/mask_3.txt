@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : In-situ Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the elongated duct at the far right filled with crowded atypical epithelial cells and luminal spaces, confined by an intact outer boundary without stromal invasion.
+
+##### Spatial Reasoning
+Select the continuous intraductal epithelial proliferation running vertically along the extreme right edge of the image.
+
+##### Ambiguity Reasoning
+Isolate intraductal tumor cells retaining a circumscribed ductal outline, contrasting with the surrounding infiltrative tumor nests dispersed within desmoplastic stroma.

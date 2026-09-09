@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment cohesive sheets, nests, and trabeculae of markedly atypical epithelial cells infiltrating fibrous stroma, lacking myoepithelial rims or ductal confinement.
+
+##### Hierarchical Reasoning
+Select the dominant, most extensive epithelial cell population occupying the central and right portions of the tissue section.
+
+##### Ambiguity Reasoning
+Differentiate from surrounding stroma by higher nuclear density, pleomorphism, and solid epithelial architecture rather than collagenous or inflammatory background.

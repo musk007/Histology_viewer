@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment cohesive sheets and nests of markedly atypical epithelial cells with enlarged pleomorphic nuclei and prominent nucleoli infiltrating into surrounding pale eosinophilic stroma, lacking ductal or lobular glandular architecture.
+
+##### Spatial Reasoning
+Select the hypercellular tumor cell population occupying the left and lower-right portions of the image, contrasting with the more eosinophilic acellular stroma centrally and to the right.
+
+##### Ambiguity Reasoning
+Isolate tumor cells showing solid growth and cytologic atypia, distinguishing them from the adjacent hypocellular collagenous stroma without cohesive epithelial clusters.

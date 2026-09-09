@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the elongated, irregular tubular gland in desmoplastic stroma, with narrow slit-like lumen and crowded, stratified, mucin-depleted epithelium lacking well-formed round architecture.
+
+##### Spatial Reasoning
+Located along the superior edge of the image, running horizontally within the fibrotic stromal area above the larger complex gland cluster.
+
+##### Hierarchical Reasoning
+It is the longest, thinnest neoplastic glandular structure in this field, extending more linearly than the deeper, bulkier glands.

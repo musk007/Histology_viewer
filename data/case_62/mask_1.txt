@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment the crowded atypical epithelial cells forming complex, thickened lepidic and papillary linings along alveolar walls, with back-to-back tufted projections replacing normal thin septal epithelium.
+
+##### Spatial Reasoning
+Focus on the dense epithelial proliferation occupying the left and lower portions of the field, contrasting with the more open alveolated parenchyma on the right.
+
+##### Ambiguity Reasoning
+Select epithelial linings that are multilayered and cytologically atypical, lacking the delicate single-cell alveolar lining seen in adjacent normal lung.

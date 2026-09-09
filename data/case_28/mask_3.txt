@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the small, superficially located round crypt with open central lumen, abundant goblet cell mucin, and well-preserved basal nuclear polarity.
+
+##### Spatial Reasoning
+Select the isolated crypt along the superior edge of the mucosa, just above the larger elongated glands.
+
+##### Hierarchical Reasoning
+Identify the smallest, most superficially placed crypt compared with the deeper, larger tubular glands.

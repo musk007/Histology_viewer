@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the elongated tubular gland in longitudinal view at the stromal edge, with irregular hyperchromatic epithelium and a narrow, partially open lumen containing eosinophilic debris.
+
+##### Spatial Reasoning
+Located along the far right peripheral border of the image, embedded within densely fibrotic stroma.
+
+##### Hierarchical Reasoning
+It is the most conspicuous, well-formed tubular structure at the right margin, more intact than the fragmented glands centrally.

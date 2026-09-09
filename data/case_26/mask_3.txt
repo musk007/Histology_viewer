@@ -1,0 +1,16 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral right oval cross-sectioned gland with a small irregular central lumen, crowded stratified hyperchromatic nuclei, and reduced goblet mucin within desmoplastic stroma.
+
+##### Spatial Reasoning
+Select the solitary oval gland located at the far right peripheral edge of the tissue field.
+
+##### Hierarchical Reasoning
+Isolate the relatively small, compact neoplastic gland compared with the larger central glands.
+
+##### Ambiguity Reasoning
+Identify the rightmost gland that is more compact and uniformly cellular than adjacent, more dilated luminal glands.

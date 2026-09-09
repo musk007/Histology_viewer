@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment dense lymphocytic aggregates within loose edematous stroma, forming dark purple sheets and clusters lacking cohesive epithelial nests or glandular lumina.
+
+##### Spatial Reasoning
+Select lymphoid aggregates scattered between more eosinophilic fibrotic stromal bundles, including the prominent cluster along the lower-right margin of the field.
+
+##### Ambiguity Reasoning
+Isolate regions where inflammatory cells dominate over collagen, distinguishing them from adjacent hypocellular desmoplastic tumor-associated stroma.

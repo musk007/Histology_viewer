@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the elongated peripheral tubular gland with irregular angulated contour, hyperchromatic stratified nuclei, reduced goblet mucin, and partially collapsed slit-like lumen.
+
+##### Spatial Reasoning
+Select the superficial-right edge gland running along the outer border of the tissue section.
+
+##### Hierarchical Reasoning
+Isolate the longest, most laterally stretched gland compared with the more rounded central glands.

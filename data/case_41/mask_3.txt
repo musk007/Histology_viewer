@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Necrosis not In-situ
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic, acellular necrotic areas with ghost cell outlines and karyorrhectic debris, free within stroma and not confined to ducts.
+
+##### Spatial Reasoning
+Select the elongated and irregular central and right-sided necrotic zones interposed between surrounding viable invasive tumor nests.
+
+##### Ambiguity Reasoning
+Isolate necrotic regions lacking viable nuclei, distinguishing them from adjacent hypercellular invasive carcinoma and fibrotic tumor-associated stroma.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic desmoplastic stromal tissue with collagen bundles and scattered spindle fibroblasts surrounding and separating invasive epithelial nests.
+
+##### Ambiguity Reasoning
+Select collagen-rich stroma with relatively sparse inflammatory cells, distinguishing it from more densely lymphocyte-packed inflamed stromal areas.

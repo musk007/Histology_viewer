@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the superior central round gland with a large open lumen and a central intraluminal epithelial cluster, lined by relatively uniform cuboidal cells.
+
+##### Spatial Reasoning
+Select the single well-formed gland located near the superior edge of the tissue core, centrally positioned within surrounding fibromuscular stroma.

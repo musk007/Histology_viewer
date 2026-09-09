@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : healthy
+
+#### Description
+##### Histological Reasoning
+Segment the elongated, benign-appearing longitudinal crypt with open continuous lumen, abundant mucin-filled goblet cells, and orderly basally aligned nuclei.
+
+##### Spatial Reasoning
+Located along the superior edge of the image, forming the uppermost elongated crypt.
+
+##### Hierarchical Reasoning
+Largest longitudinal crypt in the superficial row, spanning most of the upper field.

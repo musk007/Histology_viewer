@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the eosinophilic, collagen-rich fibrous stroma with spindle-shaped fibroblasts that separates and surrounds invasive carcinoma nests, lacking dense lymphoid aggregates or viable tumor cells.
+
+##### Ambiguity Reasoning
+Differentiate from inflamed stroma by its more hyalinized collagen and sparse inflammatory cells, and from tumor by absence of cohesive atypical epithelial clusters.

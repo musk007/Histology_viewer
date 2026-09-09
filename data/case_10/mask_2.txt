@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the inferior compact tumor area composed of solid nests and cords of markedly atypical cells with virtually absent true glandular lumina.
+
+##### Spatial Reasoning
+Select the broad continuous tumor band occupying the lower margin of the tissue section, directly beneath more fibrotic and gland-forming areas.
+
+##### Hierarchical Reasoning
+Identify the dominant, most extensive poorly differentiated tumor component forming the main bulk of carcinoma in this field.

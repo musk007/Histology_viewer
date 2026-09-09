@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrotic stroma with elongated spindle fibroblasts and dense collagen bundles interposed between adjacent atypical epithelial tumor nests.
+
+##### Ambiguity Reasoning
+Select collagen-rich stromal areas with relatively sparse inflammatory cells, distinguishing them from more lymphocyte-dense inflamed stroma.

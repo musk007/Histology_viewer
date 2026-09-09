@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Necrosis not In-situ
+
+#### Description
+##### Histological Reasoning
+Segment acellular eosinophilic necrotic debris with ghost cell outlines and karyorrhectic fragments lying free in stroma, not confined within ducts.
+
+##### Ambiguity Reasoning
+Select necrotic areas lacking intact ductal contours or continuous epithelial lining, distinguishing them from comedo-type intraductal necrosis.

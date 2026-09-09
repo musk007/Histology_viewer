@@ -1,0 +1,16 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the elongated, moderately irregular tubular gland with crowded, stratified hyperchromatic nuclei and reduced goblet mucin, showing a narrow slit-like lumen and desmoplastic surrounding stroma.
+
+Spatial Reasoning
+Select the vertically oriented tubular gland located along the inferior-right edge of the image.
+
+##### Hierarchical Reasoning
+Isolate the tallest, most vertically elongated gland in the inferior-right region compared with adjacent shorter glands.
+
+##### Ambiguity Reasoning
+Identify the inferior-right elongated gland lacking the more complex branching and broader lumen seen in nearby larger central glands.

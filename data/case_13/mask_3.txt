@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the elongated focus of poorly differentiated carcinoma composed of scattered single cells and tiny cords infiltrating dense fibromuscular stroma without recognizable glandular lumina.
+
+##### Spatial Reasoning
+Select the narrow infiltrative band running obliquely across the central-left portion of the core between more gland-forming tumor at both ends.
+
+##### Ambiguity Reasoning
+Isolate the area where tumor cells are most dispersed within stroma, lacking the larger cribriform or microacinar gland spaces seen in adjacent regions.

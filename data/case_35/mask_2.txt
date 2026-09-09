@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the elongated longitudinal crypt with open continuous lumen, abundant goblet cell mucin, and orderly single-layer epithelium with basal nuclei and preserved polarity.
+
+##### Spatial Reasoning
+Select the centrally located elongated crypt in the left half of the image, bordered by paler lamina propria on both sides.
+
+##### Hierarchical Reasoning
+Isolate the most elongated, smoothly contoured crypt among adjacent similarly sized but slightly shorter glands.

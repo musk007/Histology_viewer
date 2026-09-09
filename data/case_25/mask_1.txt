@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the large elongated tubular gland along the left edge, with irregular lumen, crowded stratified hyperchromatic nuclei, and reduced intraluminal mucin.
+
+##### Spatial Reasoning
+Select the dominant vertically oriented gland occupying most of the left side, extending from upper to lower field margin.
+
+##### Hierarchical Reasoning
+Isolate the largest and most elongated gland in the field, broader and more extensive than surrounding smaller irregular glands.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the expansile, predominantly fused and cribriform malignant glands with irregular, variably sized lumina and minimal intervening stroma replacing nearly the entire tissue core.
+
+##### Hierarchical Reasoning
+Select the dominant carcinoma component occupying almost the full circular core, excluding only peripheral artifact or pale acellular areas.

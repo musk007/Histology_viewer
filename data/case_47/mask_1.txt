@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment infiltrative angulated nests and cords of atypical epithelial cells within desmoplastic stroma, lacking a continuous myoepithelial rim or ductal confinement.
+
+##### Ambiguity Reasoning
+Differentiate from adjacent benign-appearing ducts by selecting only irregular stromal-infiltrating epithelial clusters with marked nuclear atypia and no intact surrounding myoepithelial layer.

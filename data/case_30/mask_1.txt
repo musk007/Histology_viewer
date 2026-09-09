@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the long, angulated malignant gland with irregular slit-like lumen and markedly stratified, hyperchromatic epithelium showing reduced goblet mucin and partial luminal bridging.
+
+##### Spatial Reasoning
+Select the dominant elongated gland running horizontally across the upper half of the image, extending from left toward the upper-right edge.
+
+##### Hierarchical Reasoning
+Isolate the largest, most continuous neoplastic glandular structure, more extensive than the smaller fragmented glands beneath it.

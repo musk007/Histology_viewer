@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : inflamed stroma
+
+#### Description
+##### Histological Reasoning
+Segment stromal regions showing loose edematous connective tissue densely infiltrated by small lymphocytes and mixed inflammatory cells, lacking cohesive epithelial tumor nests.
+
+Ambiguity Reasoning
+Select collagen-poor, inflammation-rich stroma rather than fibrotic desmoplastic bands that separate or cuff invasive carcinoma cells.

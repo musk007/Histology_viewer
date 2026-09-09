@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the central and inferior area of fused, poorly formed glands with irregular narrow lumina embedded in dense fibromuscular stroma, lacking well-formed round benign acini.
+
+##### Spatial Reasoning
+Select the broad central-to-inferior band of tumor between the relatively looser stroma superiorly and the tissue edge inferiorly.
+
+##### Hierarchical Reasoning
+Isolate the dominant confluent tumor region forming the main bulk of atypical glands in this core.

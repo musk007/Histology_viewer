@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the elongated glands with cribriform and fused architecture, containing irregular slit-like lumina and crowded epithelial cells with minimal intervening stroma.
+
+##### Spatial Reasoning
+Select the broad, vertically oriented glandular tract running from the superior-right toward the central portion of the tissue disc.

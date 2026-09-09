@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact cluster of well-formed round glands with open lumina and relatively uniform nuclei embedded within dense fibromuscular stroma.
+
+##### Spatial Reasoning
+Select the small acinar cluster located in the right-central portion of the core, adjacent to a vertically oriented fibromuscular band.

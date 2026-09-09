@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the small, well-formed, round to oval microacinar glands with open lumina embedded in relatively loose fibromuscular stroma, lacking gland fusion.
+
+##### Spatial Reasoning
+Select the discrete microacinar gland cluster located in the superior-right peripheral portion of the tissue section.

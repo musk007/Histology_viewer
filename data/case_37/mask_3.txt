@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Necrosis not In-situ
+
+#### Description
+##### Histological Reasoning
+Segment pale eosinophilic, acellular geographic areas with ghost cell outlines and karyorrhectic debris lying within tumor nests, not confined by ducts.
+
+##### Ambiguity Reasoning
+Select necrotic pools lacking viable nuclei or preserved ductal architecture, contrasting with surrounding hypercellular invasive carcinoma and fibrotic stroma.

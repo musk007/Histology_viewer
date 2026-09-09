@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Necrosis not In-Situ
+
+#### Description
+##### Histological Reasoning
+Segment the irregular pale eosinophilic acellular area with ghost cell outlines and karyorrhectic debris, lacking intact viable tumor cells or ductal confinement.
+
+##### Spatial Reasoning
+Select the elongated branching necrotic focus located in the upper-right portion of the tissue, surrounded by more cellular tumor and stromal tissue.

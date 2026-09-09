@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : healthy
+
+#### Description
+##### Histological Reasoning
+Segment the centrally located, round cross-section crypt with a well-formed circular lumen, abundant goblet cell mucin, and orderly single-layered epithelium with basal nuclei.
+
+##### Spatial Reasoning
+Select the round crypt in the mid-right region, surrounded by dense lymphocytic infiltrate and flanked by more elongated longitudinal crypt profiles.
+
+##### Hierarchical Reasoning
+Isolate the most circular, well-formed crypt among adjacent predominantly elongated glands.

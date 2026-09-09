@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment cohesive nests and cords of markedly atypical epithelial cells infiltrating desmoplastic stroma, lacking a continuous myoepithelial rim or ductal confinement.
+
+##### Ambiguity Reasoning
+Differentiate from surrounding inflamed or fibrotic stroma by selecting only densely packed epithelial cell clusters with enlarged pleomorphic nuclei and mitotic activity.

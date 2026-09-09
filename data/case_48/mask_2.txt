@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the loose, pale stromal areas densely infiltrated by small lymphocytes and inflammatory cells, lacking cohesive epithelial nests or glandular structures.
+
+##### Ambiguity Reasoning
+Select stromal regions with prominent lymphocytic aggregates rather than collagen-rich desmoplastic stroma or intact epithelial tumor clusters.

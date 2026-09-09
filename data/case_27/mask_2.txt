@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the irregular, angulated epithelial cluster on the right with poorly formed slit-like lumen and markedly stratified, hyperchromatic nuclei lacking goblet mucin.
+
+##### Spatial Reasoning
+Select the elongated epithelial structure along the right lateral edge, extending inward from the pale stromal area toward the central crowded glands.
+
+##### Ambiguity Reasoning
+Isolate the right-sided, most irregularly contoured epithelial fragment lacking a round central lumen, unlike the more tubular glands on the left.

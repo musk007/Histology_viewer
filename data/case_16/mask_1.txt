@@ -1,0 +1,11 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Benign tissue
+
+#### Description
+##### Histological Reasoning
+Segment the compact benign gland cluster with smooth rounded contours and relatively uniform nuclei embedded within dense fibromuscular stroma.
+
+##### Spatial Reasoning
+Select the small superior-central glandular focus located near the tissue edge, separated from the larger inferior fibromuscular and glandular areas.
+          

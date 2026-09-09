@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the inferior elongated crypt tip with crowded, mildly stratified nuclei and reduced goblet mucin, showing an oblique lumen and smooth outer contour.
+
+##### Spatial Reasoning
+Select the single crypt located along the inferior edge, partially cut off by the image border.
+
+##### Hierarchical Reasoning
+Isolate the smallest, most basally positioned crypt fragment compared with the larger, more complete glands above.

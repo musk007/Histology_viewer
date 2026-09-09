@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrous stroma composed of spindle fibroblasts and collagen that surrounds and separates the atypical gland-forming tumor epithelium.
+
+##### Spatial Reasoning
+Focus on the broad fibrous band along the lower edge of the field and any directly contiguous fibrotic tissue between adjacent tumor glands.
+
+##### Ambiguity Reasoning
+Exclude the darker, crowded epithelial tumor cells lining glandular lumina and the empty alveolar-like spaces lacking fibrous collagen.

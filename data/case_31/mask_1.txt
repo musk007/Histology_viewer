@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the large, round cross-section crypt with a wide pale mucin-filled lumen and circumferential goblet-rich epithelium showing preserved basal nuclear polarity
+
+##### Spatial Reasoning
+Located in the inferior-left quadrant, directly beneath a row of similar round crypts and adjacent to the mucosa–stroma interface.
+
+##### Hierarchical Reasoning
+This is the most expansive, pale-lumened crypt among the closely packed glands in the lower-left field.

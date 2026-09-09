@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the large, irregularly elongated moderately dysplastic gland at the inferior-left edge, with partially open pale lumen and stratified hyperchromatic epithelium showing reduced goblet mucin.
+
+##### Spatial Reasoning
+Located along the inferior-left image border, extending obliquely upward from the corner.
+
+##### Hierarchical Reasoning
+This is the broadest, most laterally extensive gland compared with adjacent, more rounded glands.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment cohesive atypical epithelial cells forming lepidic and small acinar structures lining and partially filling alveolar walls, with enlarged hyperchromatic nuclei and loss of normal thin pneumocyte lining.
+
+Ambiguity Reasoning
+Select epithelial clusters with nuclear atypia and architectural complexity, distinct from bland thin alveolar septa and loose fibrotic stroma lacking cohesive nests.

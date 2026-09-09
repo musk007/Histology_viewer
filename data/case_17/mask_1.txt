@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Benign tissue
+
+#### Description
+##### Histological Reasoning
+Segment the peripheral fibromuscular stromal rim containing scattered benign-appearing glands and vessels, separating dense pink stroma from the surrounding blank background.
+
+##### Spatial Reasoning
+Select the continuous outermost circular band of tissue along the entire edge of the core, excluding the central pale acellular region.

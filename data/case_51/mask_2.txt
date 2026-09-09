@@ -1,0 +1,7 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrous stromal bands with spindle fibroblasts interposed between and surrounding the pleomorphic invasive tumor cells.

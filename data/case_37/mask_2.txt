@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrotic stroma with spindle fibroblasts and collagen bundles interposed between invasive carcinoma nests, lacking dense confluent necrotic debris.
+
+##### Ambiguity Reasoning
+Select collagen-rich desmoplastic tissue surrounding and separating tumor cells, not the darker hypercellular epithelial nests themselves.

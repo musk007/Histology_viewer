@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment the cohesive columnar tumor epithelium lining the curved luminal surface, forming a continuous atypical epithelial rim with hyperchromatic nuclei and eosinophilic cytoplasm.
+
+##### Spatial Reasoning
+Select the epithelial lining along the large pale luminal space at the lower left edge of the image.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the fibrotic tumor-associated stroma composed of eosinophilic collagen bundles with scattered spindle fibroblasts and inflammatory cells interposed between atypical epithelial cell clusters.
+
+##### Ambiguity Reasoning
+Select stromal collagen and spindle cells surrounding tumor epithelium, excluding cohesive atypical epithelial nests and open alveolar airspaces.

@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the large, well-formed acinar glands with open lumina and relatively uniform nuclei, separated by fibromuscular stroma, lacking solid or fused cribriform areas.
+
+##### Spatial Reasoning
+Select the broad epithelial glandular complex occupying the right-central to inferior-right portion of the tissue disc, bordering the pale stromal band on its left side.
+
+##### Hierarchical Reasoning
+Largest tumor island of the primary pattern in the image

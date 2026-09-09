@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrous stroma with spindle-shaped fibroblasts and scattered inflammatory cells interposed between and surrounding invasive epithelial tumor nests.
+
+##### Spatial Reasoning
+Select stromal areas lying between the large central invasive tumor nest and the smaller compact tumor cluster on the right side of the image.
+
+##### Ambiguity Reasoning
+Isolate collagen-rich stromal tissue lacking cohesive epithelial cell sheets or ductal lumina, distinguishing it from adjacent invasive carcinoma nests.

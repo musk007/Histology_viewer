@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the compact, poorly formed glandular cluster with markedly stratified hyperchromatic nuclei, scant mucin, and mostly obliterated lumina along the fibrotic stromal edge.
+
+##### Spatial Reasoning
+Select the irregular epithelial nest located at the superior-right peripheral margin of the tissue field.
+
+##### Ambiguity Reasoning
+Isolate the solid, lumen-poor epithelial cluster lacking the well-formed tubular architecture and open lumina of adjacent glands.

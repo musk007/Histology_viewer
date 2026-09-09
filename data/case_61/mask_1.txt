@@ -1,0 +1,9 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor epithelium
+
+#### Description
+##### Histological Reasoning
+"Histological Reasoning": [
+            "Segment all atypical epithelial cell clusters forming acinar and papillary tumor glands with crowded hyperchromatic nuclei and eosinophilic cytoplasm, excluding surrounding fibrotic stroma and inflammatory cells."
+          ],

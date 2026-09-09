@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment cohesive nests and irregular gland-like clusters of atypical dark-purple epithelial cells embedded within pale fibrotic stroma, showing crowded enlarged nuclei and loss of normal alveolar spaces.
+
+##### Ambiguity Reasoning
+Select epithelial cell clusters with marked nuclear atypia and gland-like architecture, not the surrounding pink collagenous stromal tissue.

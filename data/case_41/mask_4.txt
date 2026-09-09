@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment stromal regions composed of dense, sheet-like lymphocytic aggregates within loose edematous connective tissue, lacking cohesive atypical epithelial nests or desmoplastic collagen bundles.
+
+##### Spatial Reasoning
+Select lymphocyte-rich stromal bands and clusters along the inferior border of the field, abutting but not intermingling with adjacent invasive tumor cell nests.
+
+##### Ambiguity Reasoning
+Isolate areas where inflammatory cells dominate the stroma, distinguishing them from collagenized tumor-associated stroma that more sparsely surrounds invasive carcinoma cords.

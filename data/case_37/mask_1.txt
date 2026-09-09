@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment cohesive nests and sheets of hypercellular atypical epithelial cells infiltrating between pale eosinophilic desmoplastic stroma, lacking ductal confinement or a continuous myoepithelial rim.
+
+##### Hierarchical Reasoning
+Select the dominant purple tumor cell population occupying most of the field, with stroma appearing as intervening lighter pink bands.
+
+##### Ambiguity Reasoning
+Differentiate from tumor-associated stroma by focusing on densely nucleated epithelial clusters rather than sparsely cellular collagenous pink tissue.

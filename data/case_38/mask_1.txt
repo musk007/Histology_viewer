@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment infiltrative nests and cords of hypercellular atypical epithelial cells invading desmoplastic stroma, lacking a continuous myoepithelial rim or ductal confinement.
+
+##### Spatial Reasoning
+Select the elongated, branching epithelial aggregates running diagonally across the central field within the fibrotic stromal background.
+
+##### Ambiguity Reasoning
+Isolate tumor cell clusters rather than the surrounding collagen-rich spindle-cell stroma that separates and envelopes these invasive nests.

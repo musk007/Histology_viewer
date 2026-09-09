@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the fibrotic tumor stroma composed of eosinophilic collagen bundles with spindle fibroblasts and scattered inflammatory cells surrounding and separating malignant epithelial glands and nests.
+
+##### Spatial Reasoning
+Focus on the broad central and paracentral areas where dense pink fibrous tissue interdigitates with tumor epithelium, away from the peripheral alveolar-like spaces.
+
+##### Ambiguity Reasoning
+Select the collagen-rich spindle-cell background matrix, not the darker, more cellular atypical epithelial glands or the delicate normal alveolar septa at the periphery.

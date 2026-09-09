@@ -1,0 +1,7 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the cohesive cluster of atypical epithelial cells with enlarged hyperchromatic nuclei infiltrating between elongated stromal fibers, lacking a surrounding myoepithelial rim.

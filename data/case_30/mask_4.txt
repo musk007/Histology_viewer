@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the irregular, angulated gland with small fragmented lumina and markedly stratified hyperchromatic nuclei, embedded within desmoplastic stroma and showing minimal goblet mucin.
+
+##### Spatial Reasoning
+Located at the inferior-right edge of the image, separated from the larger elongated glands toward the center.
+
+##### Hierarchical Reasoning
+Smaller and more compact than the broad central glands, with more disrupted architecture and tighter epithelial clustering.

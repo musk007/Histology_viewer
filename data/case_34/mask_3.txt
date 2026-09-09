@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the irregular, angulated glandular structure at the desmoplastic–stroma interface showing a narrow slit-like lumen and crowded hyperchromatic epithelium with reduced mucin.
+
+##### Spatial Reasoning
+Located at the extreme left peripheral edge of the tissue, partially cut off by the image border within dense pink stroma.
+
+##### Hierarchical Reasoning
+Smaller and more compressed than the central glands, with the most conspicuous slit-like lumen at the stromal margin.

@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the small, elongated, irregular tubular gland with hyperchromatic, stratified nuclei and reduced mucin, partially compressed within desmoplastic stroma at the tissue edge.
+
+Spatial Reasoning
+Located at the extreme inferior-left periphery of the tissue, adjacent to the slide border and separated from the central crowded glands.
+
+##### Hierarchical Reasoning
+This is one of the smallest, most peripherally compressed neoplastic glands compared with the larger, more complex central structures.

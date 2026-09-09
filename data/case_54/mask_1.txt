@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment the atypical epithelial cells lining and slightly thickening an alveolar wall in a lepidic pattern, with enlarged hyperchromatic nuclei and preserved airspace contours.
+
+##### Ambiguity Reasoning
+Select epithelial lining that shows nuclear atypia and crowding, distinguishing it from adjacent thin, bland alveolar epithelium and fibrotic stroma.

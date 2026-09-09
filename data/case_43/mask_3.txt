@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Healthy Glands
+
+#### Description
+##### Histological Reasoning
+Identify the compact lobular cluster of small, uniform epithelial acini with preserved rounded glandular lumina and minimal cytologic atypia within delicate stroma.
+
+##### Spatial Reasoning
+Select the relatively compact lobular glandular aggregate located along the right peripheral edge of the tissue section.
+
+##### Ambiguity Reasoning
+Isolate glands showing orderly acinar architecture and uniform nuclei, lacking infiltrative cords or marked pleomorphism seen in adjacent invasive carcinoma.

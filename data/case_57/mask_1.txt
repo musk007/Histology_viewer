@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment the atypical epithelial cells forming crowded papillary and acinar tumor structures with enlarged hyperchromatic nuclei and scant intervening stroma, excluding underlying fibrous tissue.
+
+##### Spatial Reasoning
+Select the complex epithelial proliferations occupying the upper and left portions of the image, superficial to the thicker fibrous band below.
+
+##### Ambiguity Reasoning
+Isolate the densely cellular epithelial clusters with nuclear atypia, not the paler spindle-cell desmoplastic stroma or smooth fibrous band beneath.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale pink, collagen-rich desmoplastic stroma containing scattered spindle fibroblasts and sparse inflammatory cells interposed between invasive epithelial tumor nests.
+
+##### Ambiguity Reasoning
+Select stromal areas that are fibrotic and collagenized rather than densely lymphocyte-rich or composed of atypical epithelial tumor cells.

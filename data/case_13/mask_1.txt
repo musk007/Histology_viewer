@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the irregular, fused glands with cribriform-like epithelial bridges and reduced, angulated lumina embedded within desmoplastic stroma, lacking solid sheets.
+
+##### Spatial Reasoning
+Focus on the superior-left peripheral cluster of crowded atypical glands adjacent to dense fibromuscular stroma.
+
+##### Hierarchical Reasoning
+Largest island of the secondary pattern, excluding elongated central tract.

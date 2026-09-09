@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Benign tissue
+
+#### Description
+##### Histological Reasoning
+Segment the loose, pale, edematous stromal area with scattered benign-appearing small vessels and minimal epithelial elements, lacking cohesive glandular or solid tumor formations.
+
+##### Spatial Reasoning
+Select the central-superior stromal region immediately beneath the luminal surface, surrounded inferiorly by denser, more collagenized fibromuscular tissue.

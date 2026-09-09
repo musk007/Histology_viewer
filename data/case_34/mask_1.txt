@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the elongated, irregularly contoured gland at the superior edge with partially collapsed lumen, crowded hyperchromatic nuclei, and reduced goblet mucin within desmoplastic stroma.
+
+##### Spatial Reasoning
+Select the horizontally oriented gland running along the upper border of the image, just beneath the superficial stromal margin.
+
+##### Hierarchical Reasoning
+Isolate the most extensive, laterally spanning glandular structure at the top, larger than the smaller rounded glands deeper in the field.

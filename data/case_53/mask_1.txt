@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+Segment the atypical epithelial cell clusters forming crowded acinar and papillary structures with hyperchromatic nuclei lining and filling alveolar spaces.
+
+##### Ambiguity Reasoning
+Select epithelial proliferations with nuclear atypia and complex glandular folding, distinct from the surrounding fibrotic stroma and delicate normal alveolar septa.

@@ -1,13 +1,13 @@
 #### Groundtruth Information
-- Cancer Type : Colorectal
-- Grade : Adenomatous
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
 
 #### Description
 ##### Histological Reasoning
-Segment the peripheral, vertically oriented tubular crypt showing an open elongated lumen, abundant goblet cell mucin, and orderly single-layer epithelium with basal nuclei."
-
+Segment the elongated area of fused, irregular glands with poorly formed, slit-like lumina and crowded atypical epithelium lacking discrete round benign-appearing acini.
+ 
 ##### Spatial Reasoning
-Select the isolated crypt along the extreme superior-left edge of the tissue, partially cut off by the image border.
+Select the vertically oriented glandular strip along the right peripheral edge of the tissue core, extending from mid-height toward the inferior margin.
 
-##### Hierarchical Reasoning
-Identify the relatively narrow, elongated crypt smaller than the broader, more expanded glands toward the image center.
+##### Ambiguity Reasoning
+Isolate the region where glands are more confluent and irregular compared with the more rounded, microacinar glands in the central portions of the core.

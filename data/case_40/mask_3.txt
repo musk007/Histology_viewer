@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Necrosis not In-situ
+
+#### Description
+##### Histological Reasoning
+Segment acellular eosinophilic necrotic foci with granular debris and ghost tumor cell outlines within solid invasive carcinoma, not confined by ductal structures.
+
+##### Ambiguity Reasoning
+Select pale eosinophilic, low-nuclear-density areas lacking intact viable tumor nuclei, distinct from surrounding hypercellular invasive carcinoma and fibrotic stroma.

@@ -1,0 +1,7 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the cluster of markedly atypical epithelial cells forming irregular nests and cords within stroma, lacking a continuous myoepithelial rim or ductal confinement.

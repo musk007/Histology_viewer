@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Healthy Glands
+
+#### Description
+##### Histological Reasoning
+Segment the elongated, thin-walled ductal structure with orderly epithelial lining and preserved lumen, showing uniform nuclei and lacking surrounding desmoplastic or inflamed stromal reaction.
+
+##### Spatial Reasoning
+Select the solitary, horizontally oriented ductal profile located toward the upper left portion of the tissue field.
+
+##### Ambiguity Reasoning
+Isolate the normal-appearing duct distinguished from adjacent collagenous or lymphocyte-rich stroma by its intact epithelial tube and absence of cytologic atypia.

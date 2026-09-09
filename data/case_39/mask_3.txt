@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : In-situ Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the large, rounded intraductal epithelial proliferations with solid high-grade atypical cells and central comedo-type necrosis, confined within pre-existing ductal spaces.
+
+##### Ambiguity Reasoning
+Select ducts distended by cohesive atypical epithelium but retaining a surrounding fibrous rim, lacking irregular stromal invasion or infiltrative nests.

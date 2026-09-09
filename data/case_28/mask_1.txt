@@ -1,0 +1,16 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : adenomatous
+
+#### Description
+##### Histological Reasoning
+Segment the elongated longitudinal crypt with continuous narrow lumen, crowded pseudostratified nuclei, and reduced goblet mucin, showing adenomatous dysplasia.
+
+##### Spatial Reasoning
+Select the large horizontally oriented crypt along the inferior edge of the mucosa, adjacent superiorly to smaller parallel glands.
+
+##### Hierarchical Reasoning
+Isolate the most extensive, uninterrupted tubular crypt spanning nearly the entire lower field.
+
+##### Ambiguity Reasoning
+Identify the inferior crypt that is longer and more uniformly elongated than the shorter, segmented glands directly above it.

@@ -1,0 +1,7 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the large cohesive epithelial cells with marked nuclear pleomorphism and prominent nucleoli forming solid invasive sheets lacking any surrounding myoepithelial rim.

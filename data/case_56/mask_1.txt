@@ -1,0 +1,15 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : tumor epithelium
+
+#### Description
+##### Histological Reasoning
+"Histological Reasoning": [
+            "Segment cohesive atypical epithelial cells lining and partially filling alveolar walls in a lepidic pattern, with enlarged hyperchromatic nuclei and loss of normal thin septal architecture."
+          ],
+          "Spatial Reasoning": [
+            "Focus on atypical epithelial linings along the peripheral alveolated regions away from the central large airway lumen."
+          ],
+          "Ambiguity Reasoning": [
+            "Distinguish from normal alveolar epithelium by thicker crowded cell layers and nuclear atypia rather than delicate single-cell linings."
+          ],

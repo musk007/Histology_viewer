@@ -1,14 +1,16 @@
 #### Groundtruth Information
-- Cancer Type : Colorectal
-- Grade : Adenomatous
+- Cancer Type : Prostate
+- Grade : Gleason grade 5 tissue
 
 #### Description
 ##### Histological Reasoning
-Segment the large, branching adenomatous gland with elongated villous projections, crowded columnar cells, reduced goblet mucin, and irregular but still lumen-forming architecture.
+Segment the dominant central area of solid, poorly differentiated carcinoma composed of sheets and cords of cells with virtually absent true glandular lumina.
 
 ##### Spatial Reasoning
-Select the dominant villous gland occupying most of the central and right portion of the image, extending from top to bottom edge.
+Select the expansive tumor occupying the central and superior portion of the core, excluding the more peripheral zones with larger open lumina.
 
 ##### Hierarchical Reasoning
-Isolate the largest and most expansive gland, broader and more villiform than the adjacent smaller round crypts.
-              
+Isolate the largest, most diffuse region representing the bulk of tumor rather than the smaller peripheral foci.
+    
+##### Ambiguity Reasoning
+Identify the area where tumor cells grow mainly as solid nests and cords, lacking the more conspicuous rounded lumina seen in adjacent regions.

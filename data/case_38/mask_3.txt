@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Healthy Glands
+
+#### Description
+##### Histological Reasoning
+Identify small normal-appearing ducts with round to oval lumina, dual epithelial-myoepithelial cell layers, uniform nuclei, and preserved glandular architecture lacking cytologic atypia.
+
+##### Spatial Reasoning
+Select the clustered benign ducts located in the lower-right central area, embedded within inflamed but non-desmoplastic stroma.
+
+##### Ambiguity Reasoning
+Isolate glands showing intact dual cell layers and orderly luminal spaces, contrasting with adjacent inflamed stroma lacking epithelial lining.

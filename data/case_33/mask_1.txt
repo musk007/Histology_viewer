@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the irregular, angulated malignant gland in the inferior-right, with crowded stratified nuclei, scant mucin, and partially collapsed slit-like lumen within desmoplastic stroma.
+
+##### Spatial Reasoning
+Located in the inferior-right quadrant, adjacent to dense pink spindle-cell stroma and near the image border.
+
+##### Hierarchical Reasoning
+Largest well-formed neoplastic gland in this field, more cohesive and lumen-forming than scattered smaller epithelial clusters.

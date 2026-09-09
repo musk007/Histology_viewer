@@ -1,10 +1,13 @@
 #### Groundtruth Information
-- Cancer Type : Colorectal
-- Grade : Adenomatous
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
 
 #### Description
 ##### Histological Reasoning
-Segment the superior-left, round to oval cross-section crypt with centrally pale mucinous lumen and radially arranged goblet cells, showing relatively orderly benign architecture.
-
+Segment the compact cluster of well-formed round glands with open lumina and intervening fibromuscular stroma, lacking gland fusion or cribriform architecture.
+    
 ##### Spatial Reasoning
-Select the single, well-formed round crypt located at the extreme upper-left edge of the tissue field.
+Select the relatively compact glandular cluster located in the upper-left central portion of the tissue core.
+
+##### Ambiguity Reasoning
+Isolate the area showing more discrete, regularly spaced microacinar glands compared with the surrounding more irregular, distorted glandular structures.

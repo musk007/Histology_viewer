@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment loose, pale-pink stromal areas densely infiltrated by small dark lymphocytes and mixed inflammatory cells, lacking cohesive epithelial tumor nests or glandular structures.
+
+##### Spatial Reasoning
+Select stromal bands interposed between and peripheral to the surrounding solid invasive tumor nodules.
+
+##### Ambiguity Reasoning
+Differentiate from tumor-associated stroma by higher inflammatory cell density and less densely collagenized, less eosinophilic fibrotic background.

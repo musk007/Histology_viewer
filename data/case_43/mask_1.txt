@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment cohesive nests and tongues of pleomorphic epithelial cells infiltrating fibrotic desmoplastic stroma, lacking a continuous myoepithelial rim or ductal confinement.
+
+##### Spatial Reasoning
+Select the irregular epithelial aggregates centrally and superiorly embedded within pale fibrous stroma, excluding the denser lymphoid cluster at the right margin.
+
+##### Ambiguity Reasoning
+Isolate infiltrative epithelial nests with desmoplastic reaction, distinguishing them from adjacent compact lymphocytic aggregates and from more collagenous stroma without tumor cells.

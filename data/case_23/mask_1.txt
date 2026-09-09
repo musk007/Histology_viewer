@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately differentiated
+
+#### Description
+##### Histological Reasoning
+Segment the large irregular tubular gland with crowded, stratified hyperchromatic nuclei and reduced goblet mucin, showing a partially open, angulated lumen adjacent to desmoplastic stroma.
+
+##### Spatial Reasoning
+Select the dominant irregular gland occupying the inferior-left portion of the image, bordering the fibrotic stromal area on its right side.
+
+##### Hierarchical Reasoning
+Isolate the largest and most expansive neoplastic gland, broader and more complex than the smaller adjacent glands.

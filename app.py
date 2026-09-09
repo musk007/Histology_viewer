@@ -997,19 +997,29 @@ if st.session_state.unsaved_changes:
 st.sidebar.write(
     f"Case {st.session_state.case_index + 1} / {len(cases)}"
 )
-if "case_selector" not in st.session_state:
+def handle_case_selection():
+    selected_case = st.session_state.case_selector
+
+    st.session_state.case_index = cases.index(
+        selected_case
+    )
+    st.session_state.mask_index = 0
+
+
+# Synchronize the dropdown BEFORE it is created
+if (
+    "case_selector" not in st.session_state
+    or st.session_state.case_selector != case
+):
     st.session_state.case_selector = case
 
-selected_case = st.sidebar.selectbox(
+
+st.sidebar.selectbox(
     "Select case",
     cases,
     key="case_selector",
+    on_change=handle_case_selection,
 )
-
-if selected_case != case:
-    st.session_state.case_index = cases.index(selected_case)
-    st.session_state.mask_index = 0
-    st.rerun()
 
 case_prev_col, case_next_col = st.sidebar.columns(2)
 
@@ -1017,9 +1027,6 @@ with case_prev_col:
     if st.button("← Previous Case"):
         if st.session_state.case_index > 0:
             st.session_state.case_index -= 1
-            st.session_state.case_selector = cases[
-                st.session_state.case_index
-            ]
             st.session_state.mask_index = 0
             st.rerun()
 
@@ -1027,9 +1034,6 @@ with case_next_col:
     if st.button("Next Case →"):
         if st.session_state.case_index < len(cases) - 1:
             st.session_state.case_index += 1
-            st.session_state.case_selector = cases[
-                st.session_state.case_index
-            ]
             st.session_state.mask_index = 0
             st.rerun()
 

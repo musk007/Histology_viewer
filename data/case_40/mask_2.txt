@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment fibrotic, collagen-rich desmoplastic stroma with spindle fibroblasts immediately surrounding and separating invasive carcinoma nests, showing relatively sparse inflammatory cells compared with adjacent lymphocyte-dense areas.
+
+##### Ambiguity Reasoning
+Select collagenized stromal bands cuffing tumor islands, not the densely lymphocytic inflamed stroma or the hypercellular epithelial tumor nests.

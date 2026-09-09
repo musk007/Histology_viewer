@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the entire circular tissue core containing predominantly well-formed, separate microacinar glands with open lumina embedded in fibromuscular stroma, lacking fused or solid tumor areas.
+
+##### Hierarchical Reasoning
+Select the dominant central tissue disc, excluding the surrounding blank slide background.

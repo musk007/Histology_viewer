@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Colorectal
+- Grade : moderately-to-poorly differentated
+
+#### Description
+##### Histological Reasoning
+Segment the superior, round to oval gland with a relatively smooth contour, central pale necrotic-appearing lumen, and surrounding stratified hyperchromatic epithelium with reduced goblet mucin.
+
+##### Spatial Reasoning
+Select the centrally located, slightly upper gland lying just above the dense fibrous stromal bundle and between more elongated adjacent glands.
+
+##### Hierarchical Reasoning
+Isolate the most rounded, cystically dilated gland in this field, larger and less angulated than neighboring irregular glands.

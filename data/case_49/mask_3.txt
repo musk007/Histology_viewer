@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment stromal areas composed of loose pale collagenous tissue containing scattered small dark lymphocytes without cohesive epithelial tumor nests or glandular structures.
+
+##### Spatial Reasoning
+Select the lymphocyte-rich stromal focus situated along the lower-right edge of the fibrous tissue field.
+
+##### Ambiguity Reasoning
+Isolate regions where inflammatory cells predominate within stroma rather than dense collagen bands tightly cuffing tumor epithelium.

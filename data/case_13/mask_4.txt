@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 4 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the elongated focus of poorly formed, angulated glands with scant slit-like lumina infiltrating within dense fibromuscular stroma, lacking well-formed rounded acini.
+
+##### Spatial Reasoning
+Select the narrow, curving band of atypical glands running obliquely along the central-to-inferior left fibromuscular stromal tract.

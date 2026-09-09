@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Invasive Tumor
+
+#### Description
+##### Histological Reasoning
+Segment the infiltrative epithelial nests and cords with pleomorphic hyperchromatic nuclei and mitoses invading desmoplastic stroma, lacking a continuous myoepithelial rim.
+
+##### Ambiguity Reasoning
+Select tumor cell clusters with marked nuclear atypia and irregular borders, distinguishing them from the surrounding fibrous stroma and scattered inflammatory cells.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment stromal areas composed of loose pale connective tissue containing scattered small round lymphocytes and inflammatory cells, lacking cohesive epithelial tumor nests.
+
+##### Ambiguity Reasoning
+Select stromal regions richer in lymphocytes than collagen, distinguishing them from densely fibrotic desmoplastic tumor-associated stroma.

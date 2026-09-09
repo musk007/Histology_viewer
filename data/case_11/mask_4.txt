@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Prostate
+- Grade : Gleason grade 3 tissue
+
+#### Description
+##### Histological Reasoning
+Segment the vertically oriented chain of small, well-formed round glands with open lumina embedded within dense, eosinophilic fibromuscular stroma, lacking gland fusion or cribriform architecture.
+
+##### Spatial Reasoning
+Select the central-right linear cluster of glands running vertically along the main fibromuscular band, between looser stromal areas on either side.

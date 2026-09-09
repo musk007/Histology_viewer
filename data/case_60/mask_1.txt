@@ -1,0 +1,9 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Tumor Epithelium
+
+#### Description
+##### Histological Reasoning
+"Histological Reasoning": [
+            "Segment cohesive atypical epithelial cells forming crowded acinar and solid nests with enlarged hyperchromatic nuclei and scant intervening stroma, excluding surrounding pale fibrous tissue."
+          ],

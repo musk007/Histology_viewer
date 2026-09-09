@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Tumor-associated Stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrotic stroma with spindle fibroblasts and scattered inflammatory cells interposed between and cuffing invasive carcinoma nests, lacking dense lymphoid-sheet architecture.
+
+##### Spatial Reasoning
+Select stromal bands and bridges centrally traversing the field and extending between multiple opposing invasive tumor nodules.
+
+##### Ambiguity Reasoning
+Isolate collagen-rich desmoplastic areas adjacent to tumor, not the darker hypercellular epithelial nests or any compact lymphoid aggregates.

@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : tumor-associated stroma
+
+#### Description
+##### Histological Reasoning
+Segment the pale eosinophilic fibrotic stroma containing spindle fibroblasts and sparse inflammatory cells that separates and cuffs invasive epithelial tumor nests.
+
+##### Ambiguity Reasoning
+Exclude densely cellular tumor nests and any stroma dominated by tight lymphocytic aggregates rather than collagenous desmoplasia.

@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Normal Tissue
+
+#### Description
+##### Histological Reasoning
+Segment the delicate normal lung parenchyma showing thin alveolar septa and open airspaces with flat inconspicuous lining cells, lacking complex crowded papillary tumor epithelium.
+
+##### Spatial Reasoning
+Select the more peripheral right-sided regions where airy alveolar spaces predominate over dense cellular tissue.
+
+##### Ambiguity Reasoning
+Isolate areas with smooth, uniform alveolar walls rather than the thick, highly cellular papillary fronds of tumor epithelium.

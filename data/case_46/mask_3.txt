@@ -1,0 +1,10 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : In-situ Tumor
+
+#### Description
+##### Histological Reasoning
+Segment ducts and lobular units distended by crowded atypical epithelial cells with solid or cribriform intraductal architecture, retaining a peripheral myoepithelial rim and lacking stromal invasion.
+
+##### Ambiguity Reasoning
+Select intraductal epithelial proliferations with preserved circumferential boundary, distinguishing them from invasive nests infiltrating desmoplastic stroma.

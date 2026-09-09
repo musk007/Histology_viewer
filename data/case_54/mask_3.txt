@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Lung
+- Grade : Normal Tissue
+
+#### Description
+##### Histological Reasoning
+Segment the delicate normal lung parenchyma showing thin alveolar septa with open airspaces and bland flattened lining cells without desmoplastic stroma.
+
+##### Spatial Reasoning
+Select the peripheral lace-like alveolated regions bordering the central, more cellular tissue.
+
+##### Ambiguity Reasoning
+Isolate areas with preserved thin septa and uniform pneumocytes, lacking crowded atypical epithelial clusters or dense fibrotic stroma.

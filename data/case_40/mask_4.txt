@@ -1,0 +1,13 @@
+#### Groundtruth Information
+- Cancer Type : Breast
+- Grade : Inflamed Stroma
+
+#### Description
+##### Histological Reasoning
+Segment stromal regions composed of loose pale collagen infiltrated by dense lymphocytic aggregates and mixed inflammatory cells, lacking cohesive epithelial tumor nests.
+
+##### Spatial Reasoning
+Select elongated inflammatory stromal bands along the left side of the image interdigitating between adjacent fibrotic stroma and nearby tumor cell clusters.
+
+##### Ambiguity Reasoning
+Isolate stroma where inflammatory cells outnumber fibroblasts and collagen, distinguishing it from more fibrotic, hypocellular tumor-associated stroma.
