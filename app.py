@@ -41,6 +41,13 @@ st.markdown(
         line-height: 1.2 !important;
         text-align: center;
     }
+
+    div[data-testid="stToggle"] label p {
+        white-space: normal !important;
+        overflow: visible !important;
+        text-overflow: unset !important;
+        line-height: 1.2 !important;
+    }
     </style>
     """,
     unsafe_allow_html=True,
