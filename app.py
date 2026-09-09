@@ -3930,7 +3930,7 @@ with right:
     if not skip_sample:
 
         action_save, action_audio, action_flag, action_skip = st.columns(
-            [1.4, 1.4, 1.5, 1.4]
+            [1.4, 1.3, 2.2, 1.4]
         )
 
         with action_save:
