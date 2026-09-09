@@ -3956,7 +3956,7 @@ with right:
 
         with action_flag:
             flagged = st.toggle(
-                "🚩 Flag for discussion",
+                "🚩 Flag for \ndiscussion",
                 key=f"flag_{case}_{selected_mask_file}",
                 disabled=form_disabled,
                 on_change=autosave_shared_controls,
