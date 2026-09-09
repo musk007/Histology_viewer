@@ -48,10 +48,22 @@ st.markdown(
         text-overflow: unset !important;
         line-height: 1.2 !important;
     }
+    div[data-testid="stToggle"] p {
+        font-size: 0 !important;
+    }
+
+    div[data-testid="stToggle"] p::after {
+        content: "🚩 Flag for\A discussion";
+        white-space: pre;
+        font-size: 14px;
+        line-height: 1.2;
+    }
     </style>
     """,
     unsafe_allow_html=True,
 )
+
+
 
 left_logo, title_col, right_logo = st.columns([1.5, 5, 1.5])
 
@@ -3956,7 +3968,7 @@ with right:
 
         with action_flag:
             flagged = st.toggle(
-                "🚩 Flag for \ndiscussion",
+                "🚩 Flag for discussion",
                 key=f"flag_{case}_{selected_mask_file}",
                 disabled=form_disabled,
                 on_change=autosave_shared_controls,
