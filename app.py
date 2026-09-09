@@ -188,10 +188,13 @@ def preserve_tier1_text(case, selected_mask_file):
 # Cases
 # --------------------------------------------------
 
-cases = sorted([
-    d for d in os.listdir("data")
-    if os.path.isdir(os.path.join("data", d))
-])
+cases = sorted(
+    [
+        d for d in os.listdir("data")
+        if os.path.isdir(os.path.join("data", d))
+    ],
+    key=lambda x: int(x)
+)
 
 
 
