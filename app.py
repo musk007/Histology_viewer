@@ -88,7 +88,8 @@ DRIVE_FOLDER_ID = "1m99hqkDM30woZKlLIpPfK5B6-nHTg-G2"
 GCS_BUCKET_NAME = "histology-audio-feedback-roba"
 
 REVIEWERS = [
-    "Ayoub Nahal",
+    # "Ayoub Nahal",
+    "Suhail Al-Salam",
     "Shadab Khan",
     "Roba Al Majzoub",
 ]
