@@ -1798,7 +1798,12 @@ def autosave_in_progress(
         )
 
     else:
-        sheet.append_row(row_data)
+        try:
+            sheet.append_row(row_data)
+        except gspread.exceptions.APIError as e:
+            print("Google Sheets status:", e.response.status_code)
+            print("Google Sheets error:", e)
+            raise
 
     get_in_progress_row_map.clear()
     get_in_progress_draft.clear()
