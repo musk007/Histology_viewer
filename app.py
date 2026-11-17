@@ -220,7 +220,8 @@ def connect_to_sheet():
     )
 
     client = gspread.authorize(creds)
-    sheet = client.open("Histology_Feedback").sheet1
+    sheet = client.open("ReferralSeg_Feedback").sheet1
+    # sheet = client.open("Histology_Feedback").sheet1
 
     return sheet
 
@@ -237,7 +238,8 @@ def connect_to_in_progress_sheet():
     )
 
     client = gspread.authorize(creds)
-    workbook = client.open("Histology_Feedback")
+    workbook = client.open("ReferralSeg_Feedback")
+    # workbook = client.open("Histology_Feedback")
 
     return workbook.worksheet("In_Progress")
 
